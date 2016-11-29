@@ -1,34 +1,20 @@
 #!/usr/local/bin/node
 
-var chalk = require('chalk')
-var clear = require('clear')
-var CLI = require('clui')
-var figlet = require('figlet')
-var inquirer = require('inquirer')
-var Preferences = require('preferences')
-var Spinner = CLI.Spinner
-var _ = require('lodash')
-var touch = require('touch')
-var fs = require('fs')
-var program = require('commander')
-var util = require('./commands/util')
+let chalk = require('chalk')
+let clear = require('clear')
+let CLI = require('clui')
+let figlet = require('figlet')
+let inquirer = require('inquirer')
+let Preferences = require('preferences')
+let Spinner = CLI.Spinner
+let CONSTANTS = require('./Configuration/constants')
+let _ = require('lodash')
+let touch = require('touch')
+let fs = require('fs')
+let program = require('commander')
+let util = require('./commands/util')
 const spawn = require('child_process').spawn
 
-let spawnMicroservice = function (ms) {
-  let msProcess = spawn('node', [`${ms.name}/${ms.name}.js`, '--xyzport', ms.port, '--xyzhost', 'http://0.0.0.0', '--xyzdev'])
-
-  msProcess.stdout.on('data', function (data) { // register one or more handlers
-    process.stdout.write(data.toString())
-  })
-
-  msProcess.stderr.on('data', function (data) {
-    process.stdout.write(data)
-  })
-
-  msProcess.on(`exit`, function (code) {
-    console.log(`child process for ${ms.name} exited with code` + code)
-  })
-}
 program
   .command('init')
   .description('create new node xyz system')
@@ -54,7 +40,7 @@ program
         console.log(chalk.red('Microservice with this name already exists'))
         process.exit()
       } else {
-        var questions = [
+        let questions = [
           {
             type: 'input',
             name: 'port',
@@ -97,26 +83,8 @@ program
 
 program
   .command('dev')
-  .option('-s, --single <ms>', 'run a single ms instance in dev mood')
+  .option('-c, --config <conf>', 'run services using the xyz file given')
   .description('run one instace of each ms locally')
-  .action((env, options) => {
-
-    if (env.single) {
-      let xyz = require(`${process.cwd()}/xyz.json`)
-      for (let ms of xyz.microservices) {
-        if (ms.name == env.single) {
-          spawnMicroservice(ms)
-          return
-        }
-      }
-      console.log('No microservices with such name found.')
-      process.exit()
-    } else {
-      let xyz = require(`${process.cwd()}/xyz.json`)
-      for (let ms of xyz.microservices) {
-        spawnMicroservice(ms)
-      }
-    }
-  })
+  .action(require('./commands/dev.command'))
 
 program.parse(process.argv)
