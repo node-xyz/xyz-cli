@@ -26,6 +26,7 @@
     "lodash": "^4.13.1",
     "minimist": "^1.2.0",
     "preferences": "^0.2.1",
-    "touch": "^1.0.0"
+    "touch": "^1.0.0",
+    "xyz-core": "latest"
   }
 }

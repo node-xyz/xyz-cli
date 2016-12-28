@@ -4,7 +4,6 @@ var XYZ = require('xyz-core').xyz
 var stringMs = new XYZ({
   selfConf: {
     logLevel: 'debug',
-    seed: ['127.0.0.1:3333'],
     name: 'stringMs',
     host: '127.0.0.1',
     port: 3334
