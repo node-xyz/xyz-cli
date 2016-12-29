@@ -2,20 +2,22 @@
 
 let XYZ = require('xyz-core')
 let adminBootstrap = require('./xyz-core-commands/xyz.admin.bootstrap')
-let chalk = require('chalk')
-let clear = require('clear')
-let CLI = require('clui')
-let figlet = require('figlet')
-let inquirer = require('inquirer')
-let Preferences = require('preferences')
-let Spinner = CLI.Spinner
-let CONSTANTS = require('./Configuration/constants')
-let _ = require('lodash')
-let touch = require('touch')
-let fs = require('fs')
 let program = require('commander')
-let util = require('./commands/util')
-const spawn = require('child_process').spawn
+
+program
+  .command('dev')
+  .option('-c, --config <conf>', 'xyz config file to use. if not, will use ./xyzrc.json')
+  .description('run according to config file locally')
+  .action(require('./commands/command.dev'))
+
+program
+  .command('single')
+  .arguments('<node>', 'name of the microservice to run')
+  .option('-c, --config <conf>', 'xyz config file to use. if not, will use ./xyzrc.json')
+  .description('run single ms according to config file locally')
+  .action(require('./commands/command.single'))
+
+program.parse(process.argv)
 
 let cliAdmin = new XYZ({
   selfConf: {
@@ -27,13 +29,4 @@ let cliAdmin = new XYZ({
     nodes: []
   }
 })
-
 adminBootstrap(cliAdmin)
-
-program
-  .command('dev')
-  .option('-c, --config <conf>', 'run services using the xyz file given')
-  .description('run one instace of each ms locally')
-  .action(require('./commands/dev.command'))
-
-program.parse(process.argv)

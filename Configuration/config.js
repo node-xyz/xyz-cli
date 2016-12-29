@@ -7,7 +7,6 @@ module.exports = {
 
   addNode: (aNode, aProcess) => {
     nodes[aNode] = aProcess
-    console.log(Object.keys(nodes))
   },
 
   removeNode: (aNode) => {

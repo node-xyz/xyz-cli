@@ -1,4 +1,4 @@
-const config = require('./../config/config')
+const config = require('./../Configuration/config')
 
 function adminBootstrap (xyz) {
   xyz.register('/node/get', (body, resp) => {
