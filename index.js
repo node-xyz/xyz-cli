@@ -1,12 +1,10 @@
 #!/usr/local/bin/node
-
-let XYZ = require('xyz-core')
-let adminBootstrap = require('./xyz-core-commands/xyz.admin.bootstrap')
 let program = require('commander')
 
 program
   .command('dev')
   .option('-c, --config <conf>', 'xyz config file to use. if not, will use ./xyzrc.json')
+  .option('-x, --xyzadmin', 'lunch an xyz core instance inside the cli process')
   .description('run according to config file locally')
   .action(require('./commands/command.dev'))
 
@@ -18,15 +16,3 @@ program
   .action(require('./commands/command.single'))
 
 program.parse(process.argv)
-
-let cliAdmin = new XYZ({
-  selfConf: {
-    name: 'xyz-admin',
-    port: 9000,
-    host: '127.0.0.1'
-  },
-  systemConf: {
-    nodes: []
-  }
-})
-adminBootstrap(cliAdmin)

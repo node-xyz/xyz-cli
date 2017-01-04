@@ -2,9 +2,27 @@ let chalk = require('chalk')
 const CONSTANTS = require('./../Configuration/constants')
 let fork = require('./fork')
 let util = require('./util')
+let XYZ = require('xyz-core')
+let adminBootstrap = require('./../xyz-core-commands/xyz.admin.bootstrap')
 
 let dev = function (env, options) {
   let rc
+
+  if (env.xyzadmin) {
+    let cliAdmin = new XYZ({
+      selfConf: {
+        logLevel: 'info',
+        name: 'xyz-admin',
+        port: 9000,
+        host: '127.0.0.1'
+      },
+      systemConf: {
+        nodes: []
+      }
+    })
+    adminBootstrap(cliAdmin)
+  }
+
   if (! env.config) {
     console.log(chalk.blue.bold('no config file given. reading from /xyzrc.json'))
     try {
