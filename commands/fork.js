@@ -27,11 +27,12 @@ let spawnMicroservice = function (msPath, params) {
     }
 
     else if (stdio === CONSTANTS.STDIO.file) {
-      let dirname = path.dirname(selfConf.name)
+      let dirname = path.dirname(msProcess.spawnargs.slice(1,2)[0])
       if (!fs.existsSync(`${dirname}/log`) ) {
         fs.mkdirSync(`${dirname}/log`)
       }
-      stream = fs.createWriteStream(`${dirname}/log/${selfConf}.log`, {flags: 'a', autoClose: true })
+      console.log(`${dirname}/log/${identifier}.log`)
+      stream = fs.createWriteStream(`${dirname}/log/${identifier}.log`, {flags: 'w', autoClose: true })
       msProcess.stdout.pipe(stream)
       msProcess.stderr.pipe(stream)
     }
