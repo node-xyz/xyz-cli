@@ -6,8 +6,14 @@ function adminBootstrap (xyz) {
     resp.send(config.getNodes())
   })
 
+  // create a new microservice. body should contain `nodePath` and `params`
+  // example: 
+  // curl -X POST -H "Content-Type: application/json" -d \
+  //    '{"service":"/node/create", \
+  //      "userPayload":{"nodePath":"stringMS/string.ms.js", "params": "--xyz-logLevel info --xyz-allowJoin true --xyz-name math.ms --xyz-port 6000 --xyz-cli.enable true --xyz-cli.stdio file"}}'  -i "http://localhost:9000/call"
   xyz.register('/node/create', (body, resp) => {
-      
+    config.create(body.nodePath, body.params)
+    resp.send('created')
   })
 
   // restart a specific node indicated in the body. 
@@ -36,7 +42,12 @@ function adminBootstrap (xyz) {
   // ``` 
   xyz.register('/node/kill', (body, resp) => {
     config.kill(body, (err) => {
-      
+      if (!err) {
+        resp.send('Killed')
+      }
+      else {
+        resp.send(err)
+      }
     })
   })
 

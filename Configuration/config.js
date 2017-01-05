@@ -4,18 +4,23 @@ let rc = {}
 module.exports = {
   getNodes: () => Object.keys(nodes),
 
-  addNode: function(identifier, aProcess, aConfig) {
+  addNode: function addNode(identifier, aProcess, aConfig) {
     nodes[identifier] = {
       process: aProcess,
       selfConfig: aConfig
     }
   },
 
-  removeNode: function(aNode) {
+  create: function create(nodePath, params) {
+    let fork = require('./../commands/fork')
+    fork.spawnMicroservice(nodePath, params)
+  },
+
+  removeNode: function removeNode(aNode) {
     delete nodes[aNode]
   },
 
-  restart: function(identifier, cb) {
+  restart: function restart(identifier, cb) {
     if (nodes[identifier]) {
       let fork = require('./../commands/fork')
       let _spawnArgs = nodes[identifier].process.spawnargs
@@ -37,7 +42,7 @@ module.exports = {
 
   },
 
-  kill: (identifier, cb) => {
+  kill: function kill(identifier, cb) {
     if ( nodes[identifier] ) {
       nodes[identifier].process.kill()
       delete nodes[identifier]

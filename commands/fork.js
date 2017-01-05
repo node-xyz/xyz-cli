@@ -5,7 +5,7 @@ const CONSTANTS = require('./../Configuration/constants')
 const fork = require('child_process').fork
 const config = require('./../Configuration/config')
 
-let spawnMicroservice = function (msPath, params) {
+let spawnMicroservice = function (msPath, params, cb) {
   let msProcess = fork(msPath, params.split(' '), {stdio: ['pipe', 'pipe', 'pipe', 'ipc']})
   let stream
   
@@ -31,7 +31,7 @@ let spawnMicroservice = function (msPath, params) {
       if (!fs.existsSync(`${dirname}/log`) ) {
         fs.mkdirSync(`${dirname}/log`)
       }
-      console.log(`${dirname}/log/${identifier}.log`)
+
       stream = fs.createWriteStream(`${dirname}/log/${identifier}.log`, {flags: 'w', autoClose: true })
       msProcess.stdout.pipe(stream)
       msProcess.stderr.pipe(stream)
