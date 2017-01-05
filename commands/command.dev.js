@@ -20,7 +20,7 @@ let dev = function (env, options) {
         nodes: []
       }
     })
-    adminBootstrap(cliAdmin)
+    cliAdmin.bootstrap(adminBootstrap)
   }
 
   if (! env.config) {
