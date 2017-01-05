@@ -2,7 +2,7 @@ let nodes = {}
 let rc = {} 
 
 module.exports = {
-  getNodes: () => nodes ,
+  getNodes: () => Object.keys(nodes),
 
   addNode: function(identifier, aProcess, aConfig) {
     nodes[identifier] = {
@@ -34,7 +34,7 @@ module.exports = {
     else {
       cb("Node not found")
     }
-    
+
   },
 
   kill: (identifier, cb) => {

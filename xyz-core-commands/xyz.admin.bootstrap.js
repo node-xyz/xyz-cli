@@ -10,14 +10,13 @@ function adminBootstrap (xyz) {
       
   })
 
-  xyz.register('/node/restart/all', (body, resp) => {
-    for (let node of config.getNodes()) {
-      
-    }
-  })
-
   // restart a specific node indicated in the body. 
   // similar to other APIs, the body should contain a node Identifier: "[NAME]@[HOST]:[PORT]"
+  // example: 
+  // ```
+  //  curl -X POST -H "Content-Type: application/json" -d \
+  // '{"service":"/node/restart","userPayload":"stringMs@127.0.0.1:3000"}'  -i "http://localhost:9000/call"
+  // ```
   xyz.register('/node/restart', (body, resp) => {
     config.restart(body, (err) => {
       if (!err) {
