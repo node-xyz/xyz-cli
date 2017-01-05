@@ -39,9 +39,10 @@ let dev = function (env, options) {
   for (let node of rc.nodes) {
     let port = node.port
     node = util.MergeRecursive(CONSTANTS.defaultNodeConfig, node)
-    console.log(chalk.yellow(`Spawning ${node.instance} instances for ${node.name}`))
+    console.log(chalk.yellow(`Spawning ${node.instance} instances for ${node.path}`))
     for ( let i = 0; i < node.instance; i++) {
-      fork.spawnMicroservice(node.name, node.params + ` --xyz-port ${port}`, node.stdio)
+      //'--xyz-cli.enable', 'true', '--xyz-cli.stdio' , stdio
+      fork.spawnMicroservice(node.path, node.params + ` --xyz-port ${port} --xyz-cli.enable true --xyz-cli.stdio ${node.stdio}`)
       port += 1
     }
   }

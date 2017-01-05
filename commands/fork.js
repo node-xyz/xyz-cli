@@ -5,14 +5,16 @@ const CONSTANTS = require('./../Configuration/constants')
 const fork = require('child_process').fork
 const config = require('./../Configuration/config')
 
-let spawnMicroservice = function (msPath, params, stdio) {
-  let msProcess = fork(msPath, params.split(' ').concat(['--xyz-cli', 'true']), {stdio: ['pipe', 'pipe', 'pipe', 'ipc']})
+let spawnMicroservice = function (msPath, params) {
+  let msProcess = fork(msPath, params.split(' '), {stdio: ['pipe', 'pipe', 'pipe', 'ipc']})
   let stream
+  
+  msProcess.on('message', (selfConf) => {
+    let identifier = selfConf.name + '@' + selfConf.host + ':' + selfConf.port
+    let stdio = selfConf.cli.stdio 
+    config.addNode(identifier, msProcess, selfConf)
 
-  msProcess.on('message', (c) => {
-    config.addNode(c, msProcess)
-
-    console.log(chalk.blue(`process ${chalk.bold(c)} successfully lunched. writing output to ${stdio}`))
+    console.log(chalk.blue(`process ${chalk.bold(identifier)} successfully lunched. writing output to ${stdio} [${msProcess.spawnargs.slice(2).join(' ')}]`))
 
     if (stdio === CONSTANTS.STDIO.console) {
       msProcess.stdout.on('data', function (data) {
@@ -23,20 +25,21 @@ let spawnMicroservice = function (msPath, params, stdio) {
         process.stderr.write(data)
       })
     }
+
     else if (stdio === CONSTANTS.STDIO.file) {
-      let dirname = path.dirname(msPath)
+      let dirname = path.dirname(selfConf.name)
       if (!fs.existsSync(`${dirname}/log`) ) {
         fs.mkdirSync(`${dirname}/log`)
       }
-      stream = fs.createWriteStream(`${dirname}/log/${c}.log`, {flags: 'a', autoClose: true })
+      stream = fs.createWriteStream(`${dirname}/log/${selfConf}.log`, {flags: 'a', autoClose: true })
       msProcess.stdout.pipe(stream)
       msProcess.stderr.pipe(stream)
     }
-  })
 
-  msProcess.on(`exit`, function (code) {
-    config.removeNode(name)
-    console.error(chalk.bold.red(`child process for ${msPath} exited with code ${code}`))
+    msProcess.on(`exit`, function (code) {
+      config.removeNode(identifier)
+      console.error(chalk.bold.red(`child process for ${identifier} exited with code ${code}`))
+    })
   })
 }
 

@@ -3,6 +3,9 @@ module.exports = {
     console: 'console',
     file: 'file'
   },
+  intervals: {
+    killNodeAfterInit: 5000
+  },
   defaultRcConfig: {
 
   },
