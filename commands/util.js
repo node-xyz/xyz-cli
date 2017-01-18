@@ -1,23 +1,5 @@
 const fs = require('fs')
 
-function isXYZDirectory () {
-  try {
-    fs.accessSync(`${process.cwd()}/xyz.json`, fs.F_OK)
-    return true
-  } catch (err) {
-    return false
-  }
-}
-
-function doesMsExist (name) {
-  try {
-    fs.accessSync(`${process.cwd()}/${name}/${name}.json`)
-    return true
-  } catch (err) {
-    return false
-  }
-}
-
 function MergeRecursive (obj1, obj2) {
   for (var p in obj2) {
     try {
@@ -26,7 +8,7 @@ function MergeRecursive (obj1, obj2) {
       } else {
         obj1[p] = obj2[p]
       }
-    } catch(e) {
+    } catch (e) {
       obj1[p] = obj2[p]
     }
   }
@@ -34,7 +16,5 @@ function MergeRecursive (obj1, obj2) {
 }
 
 module.exports = {
-  MergeRecursive: MergeRecursive,
-  isXYZDirectory: isXYZDirectory,
-  doesMsExist: doesMsExist
+  MergeRecursive: MergeRecursive
 }

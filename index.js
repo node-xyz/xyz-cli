@@ -3,6 +3,7 @@
 let chalk = require('chalk')
 let program = require('commander')
 let config = require('./Configuration/config')
+let table = require('./commands/command.table')
 
 program
   .command('dev')
@@ -28,6 +29,8 @@ process.stdout.on('data', (data) => {
 
   if (args[0] == 'inspect' && args[1]) {
     config.inspect(args[1])
+  } else if (args[0] == 'table') {
+    table()
   } else {
     console.log(chalk.bold.red(`command {${args[0]}} not found`))
   }
