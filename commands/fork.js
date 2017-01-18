@@ -9,10 +9,9 @@ let spawnMicroservice = function (msPath, params, cb) {
   let msProcess = fork(msPath, params.split(' '), {stdio: ['pipe', 'pipe', 'pipe', 'ipc']})
   let stream
 
-  msProcess.send({title: 'inspect'})
   msProcess.on('message', (data) => {
-    console.log(`~~~~~~ MESSAGE LOG:`)
-    console.log(data)
+    // console.log(`~~~~~~ MESSAGE LOG:`)
+    // console.log(data)
 
     if (data.title == 'init') {
       let selfConf = data.body
