@@ -5,7 +5,7 @@ const CONSTANTS = require('./../Configuration/constants')
 const fork = require('child_process').fork
 const config = require('./../Configuration/config')
 
-let spawnMicroservice = function (msPath, params, cb) {
+let spawnMicroservice = function (msPath, params) {
   let msProcess = fork(msPath, params.split(' '), {stdio: ['pipe', 'pipe', 'pipe', 'ipc']})
   let stream
 
@@ -44,6 +44,11 @@ let spawnMicroservice = function (msPath, params, cb) {
         config.removeNode(identifier)
         console.error(chalk.bold.red(`child process for ${identifier} exited with code ${code}`))
       })
+    } else if (data.title === 'inspect') {
+      // whoever calls the inspect of a child process, it should count on this
+      // method to print it
+      console.log(data.body)
+      process.stdout.write('$xyz > ')
     }
   })
 }

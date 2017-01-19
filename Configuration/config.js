@@ -3,19 +3,9 @@ let chalk = require('chalk')
 let nodes = {}
 let rc = {}
 
-// single event listener. (aside from the one waiting on `init in fork.js`) // TODO unify them
-// note that multiple function of the `config` can call any child process
-// using nodes[identifier], though all of the responses should be handled here.
-process.on('message', (data) => {
-  if (data.title === 'inspect') {
-    // whoever calls the inspect of a child process, it should count on this
-    // method to print it
-    console.log(data.body)
-  }
-})
-
 module.exports = {
-  getNodes: () => Object.keys(nodes),
+
+  getNodes: () => nodes,
 
   addNode: function addNode (identifier, aProcess, aConfig) {
     nodes[identifier] = {
@@ -63,10 +53,19 @@ module.exports = {
   },
 
   inspect: function (identifier) {
-    if (Object.keys(nodes).indexOf(identifier) === -1) {
-      console.log(chalk.bold.red(`node with identifier ${identifier} not found`))
+    if (!isNaN(identifier)) {
+      if (identifier >= Object.keys(nodes).length) {
+        console.log(chalk.bold.red(`Index out of range`))
+        return
+      }
+      nodes[Object.keys(nodes)[identifier]].process.send({title: 'inspect'})
+    } else {
+      if (Object.keys(nodes).indexOf(identifier) === -1) {
+        console.log(chalk.bold.red(`node with identifier ${identifier} not found`))
+        return
+      }
+      nodes[identifier].process.send({title: 'inspect'})
     }
-    nodes[identifier].process.send({title: 'inspect'})
   },
 
   setRc: (aRc) => {

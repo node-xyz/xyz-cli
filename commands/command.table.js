@@ -7,13 +7,16 @@ marked.setOptions({
 })
 
 function table () {
-  let table = `| Identifier   |            |   |\n|----------|:-------------:|------:|\n`
+  let table = `| Index   | Identifier   |  STDIO  | arguments  |\n|----------|:-------------:|------:|\n`
 
   let nodes = config.getNodes()
-  for (let node of nodes) {
-    table += `|  ${node} |   |   |\n`
+  let index = 0
+  for (let node of Object.keys(nodes)) {
+    table += ` | ${index}|  ${node} |  ${nodes[node].selfConfig.cli.stdio} | ${nodes[node].process.spawnargs.slice(2).join(' ')} |\n`
+    index += 1
   }
   console.log(marked(table))
+  process.stdout.write('$xyz > ')
 }
 
 module.exports = table

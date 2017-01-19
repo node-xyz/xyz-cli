@@ -29,9 +29,10 @@ process.stdout.on('data', (data) => {
 
   if (args[0] == 'inspect' && args[1]) {
     config.inspect(args[1])
-  } else if (args[0] == 'table') {
+  } else if (args[0] == 'list' || args[0] == 'ls') {
     table()
   } else {
     console.log(chalk.bold.red(`command {${args[0]}} not found`))
+    process.stdout.write('$xyz >')
   }
 })

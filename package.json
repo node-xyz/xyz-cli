@@ -27,6 +27,8 @@
         "minimist": "^1.2.0",
         "preferences": "^0.2.1",
         "touch": "^1.0.0",
+        "marked": "latest",
+        "marked-terminal": "latest",
         "xyz-core": "latest"
     }
 }

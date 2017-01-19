@@ -3,7 +3,7 @@ const fork = require('./../commands/fork.js')
 
 function adminBootstrap (xyz) {
   xyz.register('/node/get', (body, resp) => {
-    resp.send(config.getNodes())
+    resp.send(Object.keys(config.getNodes()))
   })
 
   // create a new microservice. body should contain `nodePath` and `params`
