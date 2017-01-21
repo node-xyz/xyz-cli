@@ -49,6 +49,9 @@ let spawnMicroservice = function (msPath, params) {
       // method to print it
       console.log(data.body)
       process.stdout.write('$xyz > ')
+    } else if (data.title == 'inspectJSON') {
+      console.log(data.body)
+      process.stdout.write('$xyz > ')
     }
   })
 }

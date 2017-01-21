@@ -28,7 +28,9 @@ process.stdout.on('data', (data) => {
   // inspect stringMS@127.0.0.1:3000
 
   if (args[0] == 'inspect' && args[1]) {
-    config.inspect(args[1])
+    config.inspect(args[1], false)
+  } else if (args[0] == 'inspectJSON', args[1]) {
+    config.inspect(args[1], true)
   } else if (args[0] == 'list' || args[0] == 'ls') {
     table()
   } else {

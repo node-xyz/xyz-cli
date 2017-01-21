@@ -52,19 +52,19 @@ module.exports = {
     }
   },
 
-  inspect: function (identifier) {
+  inspect: function (identifier, json) {
     if (!isNaN(identifier)) {
       if (identifier >= Object.keys(nodes).length) {
         console.log(chalk.bold.red(`Index out of range`))
         return
       }
-      nodes[Object.keys(nodes)[identifier]].process.send({title: 'inspect'})
+      nodes[Object.keys(nodes)[identifier]].process.send({title: 'inspect' + (json ? 'JSON' : '')})
     } else {
       if (Object.keys(nodes).indexOf(identifier) === -1) {
         console.log(chalk.bold.red(`node with identifier ${identifier} not found`))
         return
       }
-      nodes[identifier].process.send({title: 'inspect'})
+      nodes[identifier].process.send({title: 'inspect' + (json ? 'JSON' : '')})
     }
   },
 
