@@ -19,6 +19,27 @@ module.exports = {
     fork.spawnMicroservice(nodePath, params)
   },
 
+  // TODO not fully implemented
+  duplicate: function duplicate (identifier) {
+    const fork = require('./../commands/fork')
+    let args
+    if (!isNaN(identifier)) {
+      if (identifier >= Object.keys(nodes).length) {
+        console.log(chalk.bold.red(`Index out of range`))
+        return
+      }
+      args = nodes[Object.keys(nodes)[identifier]].process.spawnargs
+    } else {
+      if (Object.keys(nodes).indexOf(identifier) === -1) {
+        console.log(chalk.bold.red(`node with identifier ${identifier} not found`))
+        return
+      }
+      args = nodes[identifier].process.spawnargs
+    }
+    console.log(args)
+    fork.spawnMicroservice(args[1], args.slice(2).join(' '))
+  },
+
   removeNode: function removeNode (aNode) {
     delete nodes[aNode]
   },
@@ -47,6 +68,10 @@ module.exports = {
       nodes[identifier].process.kill()
       delete nodes[identifier]
       cb(null)
+    } else if (!isNaN(identifier)) {
+      nodes[Object.keys(nodes)[identifier]].process.kill
+      delete nodes[Object.keys(nodes)[identifier]]
+      if (cb) cb(null)
     } else {
       cb('Node not found')
     }

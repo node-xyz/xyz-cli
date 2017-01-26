@@ -4,6 +4,7 @@ let fork = require('./fork')
 let util = require('./util')
 let XYZ = require('xyz-core')
 let adminBootstrap = require('./../xyz-core-commands/xyz.admin.bootstrap')
+let config = require('./../Configuration/config')
 
 let dev = function (env, options) {
   let rc

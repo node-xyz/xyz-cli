@@ -1,6 +1,6 @@
 {
     "name": "xyz-cli",
-    "version": "0.1.0",
+    "version": "0.3.0",
     "description": "Command line tool dor node xyz",
     "main": "index.js",
     "scripts": {

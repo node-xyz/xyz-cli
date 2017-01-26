@@ -29,10 +29,12 @@ process.stdout.on('data', (data) => {
 
   if (args[0] == 'inspect' && args[1]) {
     config.inspect(args[1], false)
-  } else if (args[0] == 'inspectJSON', args[1]) {
+  } else if (args[0] == 'inspectJSON' && args[1]) {
     config.inspect(args[1], true)
   } else if (args[0] == 'list' || args[0] == 'ls') {
     table()
+  } else if (args[0] == 'kill' && args[1]) {
+    config.kill(args[1])
   } else {
     console.log(chalk.bold.red(`command {${args[0]}} not found`))
     process.stdout.write('$xyz >')
