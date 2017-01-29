@@ -65,11 +65,15 @@ module.exports = {
 
   kill: function kill (identifier, cb) {
     if (nodes[identifier]) {
-      nodes[identifier].process.kill()
+      nodes[identifier].process.kill('SIGTERM')
       delete nodes[identifier]
       cb(null)
     } else if (!isNaN(identifier)) {
-      nodes[Object.keys(nodes)[identifier]].process.kill
+      if (identifier >= Object.keys(nodes).length) {
+        console.log(chalk.bold.red(`Index out of range`))
+        cb('out of range')
+      }
+      nodes[Object.keys(nodes)[identifier]].process.kill()
       delete nodes[Object.keys(nodes)[identifier]]
       if (cb) cb(null)
     } else {
@@ -77,7 +81,7 @@ module.exports = {
     }
   },
 
-  inspect: function (identifier, json) {
+  inspect (identifier, json) {
     if (!isNaN(identifier)) {
       if (identifier >= Object.keys(nodes).length) {
         console.log(chalk.bold.red(`Index out of range`))
@@ -90,6 +94,13 @@ module.exports = {
         return
       }
       nodes[identifier].process.send({title: 'inspect' + (json ? 'JSON' : '')})
+    }
+  },
+
+  clean () {
+    console.log(chalk.yellow(`cleaning ${Object.keys(nodes)}`))
+    for (let node in nodes) {
+      nodes[node].process.kill()
     }
   },
 

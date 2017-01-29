@@ -8,24 +8,8 @@ let config = require('./../Configuration/config')
 
 let dev = function (env, options) {
   let rc
-
-  if (env.xyzadmin) {
-    let cliAdmin = new XYZ({
-      selfConf: {
-        logLevel: 'info',
-        name: 'xyz-admin',
-        port: 9000,
-        host: '127.0.0.1'
-      },
-      systemConf: {
-        nodes: []
-      }
-    })
-    cliAdmin.bootstrap(adminBootstrap)
-  }
-
   if (!env.config) {
-    console.log(chalk.blue.bold('no config file given. reading from /xyzrc.json'))
+    console.log(chalk.blue.bold('no config file given. reading from ./xyzrc.json'))
     try {
       rc = require(`${process.cwd()}/xyzrc.json`)
     } catch (e) {
@@ -35,8 +19,16 @@ let dev = function (env, options) {
   } else {
     rc = require(`${process.cwd()}/${env.config}`)
   }
-
   rc = util.MergeRecursive(CONSTANTS.defaultRcConfig, rc)
+
+  if (env.xyzadmin) {
+    let cliAdmin = new XYZ({
+      selfConf: rc.selfConf,
+      systemConf: rc.systemConf
+    })
+    cliAdmin.bootstrap(adminBootstrap)
+  }
+
   for (let node of rc.nodes) {
     let port = node.port
     node = util.MergeRecursive(CONSTANTS.defaultNodeConfig, node)

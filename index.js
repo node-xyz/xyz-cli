@@ -21,6 +21,19 @@ program
 
 program.parse(process.argv)
 
+// catches ctrl+c event
+process.on('SIGINT', () => {
+  console.log(`[SIGINT] CLI Process About to exit with code: ${code}`)
+  process.exit()
+})
+
+// catches uncaught exceptions
+process.on('uncaughtException', (e) => {
+  console.log(chalk.bold.red(`[uncaughtException] CLI Process About to exit.\n ${e}`))
+  config.clean()
+  process.exit()
+})
+
 process.stdout.on('data', (data) => {
   let args = data.toString().split(' ').map((str) => str.trim())
 
@@ -34,7 +47,11 @@ process.stdout.on('data', (data) => {
   } else if (args[0] == 'list' || args[0] == 'ls') {
     table()
   } else if (args[0] == 'kill' && args[1]) {
-    config.kill(args[1])
+    config.kill(args[1], () => {
+      process.stdout.write('$xyz >')
+    })
+  } else if (!args[0].length) {
+    process.stdout.write('$xyz >')
   } else {
     console.log(chalk.bold.red(`command {${args[0]}} not found`))
     process.stdout.write('$xyz >')

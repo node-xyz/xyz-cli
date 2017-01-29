@@ -10,9 +10,6 @@ let spawnMicroservice = function (msPath, params) {
   let stream
 
   msProcess.on('message', (data) => {
-    // console.log(`~~~~~~ MESSAGE LOG:`)
-    // console.log(data)
-
     if (data.title == 'init') {
       let selfConf = data.body
       let identifier = selfConf.name + '@' + selfConf.host + ':' + selfConf.port
@@ -31,6 +28,7 @@ let spawnMicroservice = function (msPath, params) {
         })
       } else if (stdio === CONSTANTS.STDIO.file) {
         let dirname = path.dirname(msProcess.spawnargs.slice(1, 2)[0])
+        console.log(chalk.blue(`creating logfile ${dirname}/log/${identifier}.log`))
         if (!fs.existsSync(`${dirname}/log`)) {
           fs.mkdirSync(`${dirname}/log`)
         }
@@ -40,9 +38,19 @@ let spawnMicroservice = function (msPath, params) {
         msProcess.stderr.pipe(stream)
       }
 
-      msProcess.on(`exit`, function (code) {
+      msProcess.on(`exit`, (code) => {
         config.removeNode(identifier)
-        console.error(chalk.bold.red(`child process for ${identifier} exited with code ${code}`))
+        console.error(chalk.bold.red(`[EXIT]child process for ${identifier} exited with code ${code}`))
+      })
+
+      msProcess.on('uncaughtException', () => {
+        config.removeNode(identifier)
+        console.error(chalk.bold.red(`[uncaughtException] child process for ${identifier}`))
+      })
+
+      msProcess.on('SIGTERM', () => {
+        config.removeNode(identifier)
+        console.error(chalk.bold.red(`[SIGTERM] child process for ${identifier}`))
       })
     } else if (data.title === 'inspect') {
       // whoever calls the inspect of a child process, it should count on this
