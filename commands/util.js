@@ -15,6 +15,21 @@ function MergeRecursive (obj1, obj2) {
   return obj1
 }
 
+function isPortTaken (port, fn) {
+  var net = require('net')
+  var tester = net.createServer()
+  .once('error', function (err) {
+    if (err.code != 'EADDRINUSE') return fn(err)
+    fn(null, true)
+  })
+  .once('listening', function () {
+    tester.once('close', function () { fn(null, false) })
+    .close()
+  })
+  .listen(port)
+}
+
 module.exports = {
-  MergeRecursive: MergeRecursive
+  MergeRecursive: MergeRecursive,
+  isPortTaken: isPortTaken
 }

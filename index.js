@@ -23,16 +23,17 @@ program.parse(process.argv)
 
 // catches ctrl+c event
 process.on('SIGINT', () => {
-  console.log(`[SIGINT] CLI Process About to exit with code: ${code}`)
+  console.log(chalk.bold.red(`[SIGINT] CLI Process About to exit.`))
+  config.clean()
   process.exit()
 })
 
 // catches uncaught exceptions
-process.on('uncaughtException', (e) => {
-  console.log(chalk.bold.red(`[uncaughtException] CLI Process About to exit.\n ${e}`))
-  config.clean()
-  process.exit()
-})
+// process.on('uncaughtException', (e, ee) => {
+//   console.log(chalk.bold.red(`[uncaughtException] CLI Process About to exit.\n ${e}`))
+//   config.clean()
+//   process.exit()
+// })
 
 process.stdout.on('data', (data) => {
   let args = data.toString().split(' ').map((str) => str.trim())
@@ -50,6 +51,8 @@ process.stdout.on('data', (data) => {
     config.kill(args[1], () => {
       process.stdout.write('$xyz >')
     })
+  } else if ((args[0] == 'duplicate' || args[0] == 'dup') && args[1]) {
+    config.duplicate(args[1])
   } else if (!args[0].length) {
     process.stdout.write('$xyz >')
   } else {

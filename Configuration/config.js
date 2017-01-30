@@ -1,4 +1,5 @@
 let chalk = require('chalk')
+let util = require('./../commands/util')
 
 let nodes = {}
 let rc = {}
@@ -22,22 +23,37 @@ module.exports = {
   // TODO not fully implemented
   duplicate: function duplicate (identifier) {
     const fork = require('./../commands/fork')
-    let args
+    let spawnargs
     if (!isNaN(identifier)) {
       if (identifier >= Object.keys(nodes).length) {
         console.log(chalk.bold.red(`Index out of range`))
         return
       }
-      args = nodes[Object.keys(nodes)[identifier]].process.spawnargs
+      spawnargs = nodes[Object.keys(nodes)[identifier]].process.spawnargs
     } else {
       if (Object.keys(nodes).indexOf(identifier) === -1) {
         console.log(chalk.bold.red(`node with identifier ${identifier} not found`))
         return
       }
-      args = nodes[identifier].process.spawnargs
+      spawnargs = nodes[identifier].process.spawnargs
     }
-    console.log(args)
-    fork.spawnMicroservice(args[1], args.slice(2).join(' '))
+    // args are ready now, but we have to find a new port
+    // note that ANY SPAWN ARG will have --xyz-port (what we read from xyzrc.json)
+    let port = Number(spawnargs[spawnargs.indexOf('--xyz-port') + 1])
+    let checkPort = function (port) {
+      util.isPortTaken(port, (err, _takne) => {
+        if (_takne) {
+          port = port + 1
+          checkPort(port)
+        } else {
+          spawnargs[spawnargs.indexOf('--xyz-port') + 1] = String(port)
+          console.log(spawnargs)
+          fork.spawnMicroservice(spawnargs[1], spawnargs.slice(2).join(' '))
+        }
+      })
+    }
+
+    checkPort(port)
   },
 
   removeNode: function removeNode (aNode) {

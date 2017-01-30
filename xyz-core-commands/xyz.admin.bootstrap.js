@@ -49,6 +49,11 @@ function adminBootstrap (xyz) {
     })
   })
 
+
+  xyz.register('/node/duplicate', (body, resp) => {
+    
+  })
+
   console.log(xyz)
 }
 
