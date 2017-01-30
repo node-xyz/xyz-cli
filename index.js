@@ -29,11 +29,11 @@ process.on('SIGINT', () => {
 })
 
 // catches uncaught exceptions
-// process.on('uncaughtException', (e, ee) => {
-//   console.log(chalk.bold.red(`[uncaughtException] CLI Process About to exit.\n ${e}`))
-//   config.clean()
-//   process.exit()
-// })
+process.on('uncaughtException', (e, ee) => {
+  console.log(chalk.bold.red(`[uncaughtException] CLI Process About to exit.\n ${e}`))
+  config.clean()
+  process.exit()
+})
 
 process.stdout.on('data', (data) => {
   let args = data.toString().split(' ').map((str) => str.trim())
@@ -52,7 +52,7 @@ process.stdout.on('data', (data) => {
       process.stdout.write('$xyz >')
     })
   } else if ((args[0] == 'duplicate' || args[0] == 'dup') && args[1]) {
-    config.duplicate(args[1])
+    config.duplicate(args[1], args.slice(2))
   } else if (!args[0].length) {
     process.stdout.write('$xyz >')
   } else {

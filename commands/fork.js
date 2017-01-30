@@ -5,12 +5,13 @@ const CONSTANTS = require('./../Configuration/constants')
 const fork = require('child_process').fork
 const config = require('./../Configuration/config')
 
-let spawnMicroservice = function (msPath, params) {
+let spawnMicroservice = function (msPath, params, cb) {
   let msProcess = fork(msPath, params.split(' '), {stdio: ['pipe', 'pipe', 'pipe', 'ipc']})
   let stream
 
   msProcess.on('message', (data) => {
     if (data.title == 'init') {
+      if (cb) { cb(null, 1) }
       let selfConf = data.body
       let identifier = selfConf.name + '@' + selfConf.host + ':' + selfConf.port
       let stdio = selfConf.cli.stdio

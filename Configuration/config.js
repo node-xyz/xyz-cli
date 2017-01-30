@@ -15,12 +15,11 @@ module.exports = {
     }
   },
 
-  create: function create (nodePath, params) {
+  create: function create (nodePath, params, cb) {
     let fork = require('./../commands/fork')
-    fork.spawnMicroservice(nodePath, params)
+    fork.spawnMicroservice(nodePath, params, cb)
   },
 
-  // TODO not fully implemented
   duplicate: function duplicate (identifier) {
     const fork = require('./../commands/fork')
     let spawnargs
@@ -47,7 +46,6 @@ module.exports = {
           checkPort(port)
         } else {
           spawnargs[spawnargs.indexOf('--xyz-port') + 1] = String(port)
-          console.log(spawnargs)
           fork.spawnMicroservice(spawnargs[1], spawnargs.slice(2).join(' '))
         }
       })
@@ -97,19 +95,26 @@ module.exports = {
     }
   },
 
-  inspect (identifier, json) {
+  inspect (identifier, json, cb) {
+    let err
     if (!isNaN(identifier)) {
       if (identifier >= Object.keys(nodes).length) {
-        console.log(chalk.bold.red(`Index out of range`))
-        return
+        err = `Index out of range`
+        console.log(chalk.bold.red(err))
+        if (cb) { cb(err) }
+      } else {
+        nodes[Object.keys(nodes)[identifier]].process.send({title: 'inspect' + (json ? 'JSON' : '')})
+        if (cb) { cb(null) }
       }
-      nodes[Object.keys(nodes)[identifier]].process.send({title: 'inspect' + (json ? 'JSON' : '')})
     } else {
       if (Object.keys(nodes).indexOf(identifier) === -1) {
-        console.log(chalk.bold.red(`node with identifier ${identifier} not found`))
-        return
+        err = `node with identifier ${identifier} not found`
+        console.log(chalk.bold.red(err))
+        if (cb) { cb(err) }
+      } else {
+        nodes[identifier].process.send({title: 'inspect' + (json ? 'JSON' : '')})
+        if (cb) { cb(null) }
       }
-      nodes[identifier].process.send({title: 'inspect' + (json ? 'JSON' : '')})
     }
   },
 

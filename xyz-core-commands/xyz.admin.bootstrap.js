@@ -1,7 +1,7 @@
 const config = require('./../Configuration/config')
 const fork = require('./../commands/fork.js')
 
-function adminBootstrap (xyz) {
+function CLIadminBootstrap (xyz) {
   xyz.register('/node/get', (body, resp) => {
     resp.send(Object.keys(config.getNodes()))
   })
@@ -12,8 +12,13 @@ function adminBootstrap (xyz) {
   //    '{"service":"/node/create", \
   //      "userPayload":{"nodePath":"stringMS/string.ms.js", "params": "--xyz-logLevel info --xyz-allowJoin true --xyz-name math.ms --xyz-port 6000 --xyz-cli.enable true --xyz-cli.stdio file"}}'  -i "http://localhost:9000/call"
   xyz.register('/node/create', (body, resp) => {
-    config.create(body.nodePath, body.params)
-    resp.send('created')
+    config.create(body.nodePath, body.params, (err) => {
+      if (err) {
+        resp.send(err)
+      } else {
+        resp.send('created')
+      }
+    })
   })
 
   // restart a specific node indicated in the body.
@@ -49,12 +54,57 @@ function adminBootstrap (xyz) {
     })
   })
 
-
+  // body should be identifier or id
   xyz.register('/node/duplicate', (body, resp) => {
-    
+    config.duplicate(body, (err) => {
+      if (err) {
+        resp.send(err)
+      } else {
+        resp.send(`created`)
+      }
+    })
+  })
+
+  // body should be identifier and NOT ID
+  // example:
+  // curl -X POST -H "Content-Type: application/json" -d \
+  //  '{"service":"/node/inspect","userPayload":"string.ms@127.0.0.1:2000"}'  -i "http://localhost:9000/call"
+  xyz.register('/node/inspect', (body, resp) => {
+    // we will listen to this only once
+    // BUG: this will cause the inspect value to be printed to the console too
+
+    config.inspect(body, false, (err) => {
+      if (err) {
+        resp.send(err)
+      } else {
+        let nodes = config.getNodes()
+        nodes[body].process.once('message', (data) => {
+          if (data.title === 'inspect') {
+            resp.send(data.body)
+          }
+        })
+      }
+    })
+  })
+
+  xyz.register('/node/inspectJSON', (body, resp) => {
+    // we will listen to this only once
+    // BUG: this will cause the inspect value to be printed to the console too
+    config.inspect(body, true, (err) => {
+      if (err) {
+        resp.send(err)
+      } else {
+        let nodes = config.getNodes()
+        nodes[body].process.once('message', (data) => {
+          if (data.title === 'inspectJSON') {
+            resp.send(data.body)
+          }
+        })
+      }
+    })
   })
 
   console.log(xyz)
 }
 
-module.exports = adminBootstrap
+module.exports = CLIadminBootstrap
