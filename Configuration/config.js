@@ -7,6 +7,12 @@ let cliAdmin
 
 module.exports = {
 
+  // will return one of instances in nodes
+  // or -1
+  // TODO implement this for cleaner code
+  _chooseIdentifier (identifier) {
+  },
+
   getNodes: () => nodes,
 
   addNode: function addNode (identifier, aProcess, aConfig) {
@@ -126,6 +132,30 @@ module.exports = {
     nodes[identifier].process.send({title: 'inspect' + (json ? 'JSON' : '')})
     nodes[identifier].process.once('message', (data) => {
       if (data.title === 'inspect' + (json ? 'JSON' : '')) {
+        cb(null, data.body)
+      }
+    })
+  },
+
+  network (identifier, cb) {
+    let index = false
+    if (!isNaN(identifier)) {
+      if (identifier >= Object.keys(nodes).length) {
+        cb(`Index ${identifier} out of range`)
+        return
+      } else {
+        index = true
+      }
+    } else {
+      if (Object.keys(nodes).indexOf(identifier) === -1) {
+        cb(`node with identifier ${identifier} not founds`)
+        return
+      }
+    }
+    identifier = (index ? Object.keys(nodes)[identifier] : identifier)
+    nodes[identifier].process.send({title: 'network'})
+    nodes[identifier].process.once('message', (data) => {
+      if (data.title === 'network') {
         cb(null, data.body)
       }
     })
