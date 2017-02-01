@@ -33,7 +33,7 @@ function CLIadminBootstrap (xyz) {
       if (!err) {
         resp.send('Restarted')
       } else {
-        resp.send(err)
+        resp.send(err, 401)
       }
     })
   })
@@ -49,7 +49,7 @@ function CLIadminBootstrap (xyz) {
       if (!err) {
         resp.send('Killed')
       } else {
-        resp.send(err)
+        resp.send(err, 401)
       }
     })
   })
@@ -58,7 +58,7 @@ function CLIadminBootstrap (xyz) {
   xyz.register('/node/duplicate', (body, resp) => {
     config.duplicate(body, (err) => {
       if (err) {
-        resp.send(err)
+        resp.send(err, 401)
       } else {
         resp.send(`created`)
       }
@@ -73,16 +73,11 @@ function CLIadminBootstrap (xyz) {
     // we will listen to this only once
     // BUG: this will cause the inspect value to be printed to the console too
 
-    config.inspect(body, false, (err) => {
+    config.inspect(body, false, (err, data) => {
       if (err) {
-        resp.send(err)
+        resp.send(err, 401)
       } else {
-        let nodes = config.getNodes()
-        nodes[body].process.once('message', (data) => {
-          if (data.title === 'inspect') {
-            resp.send(data.body)
-          }
-        })
+        resp.send(data)
       }
     })
   })
@@ -90,16 +85,11 @@ function CLIadminBootstrap (xyz) {
   xyz.register('/node/inspectJSON', (body, resp) => {
     // we will listen to this only once
     // BUG: this will cause the inspect value to be printed to the console too
-    config.inspect(body, true, (err) => {
+    config.inspect(body, true, (err, data) => {
       if (err) {
         resp.send(err)
       } else {
-        let nodes = config.getNodes()
-        nodes[body].process.once('message', (data) => {
-          if (data.title === 'inspectJSON') {
-            resp.send(data.body)
-          }
-        })
+        resp.send(data)
       }
     })
   })

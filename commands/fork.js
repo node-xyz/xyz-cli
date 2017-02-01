@@ -53,14 +53,6 @@ let spawnMicroservice = function (msPath, params, cb) {
         config.removeNode(identifier)
         console.error(chalk.bold.red(`[SIGTERM] child process for ${identifier}`))
       })
-    } else if (data.title === 'inspect') {
-      // whoever calls the inspect of a child process, it should count on this
-      // method to print it
-      console.log(data.body)
-      process.stdout.write('$xyz > ')
-    } else if (data.title == 'inspectJSON') {
-      console.log(data.body)
-      process.stdout.write('$xyz > ')
     }
   })
 }

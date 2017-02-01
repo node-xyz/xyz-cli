@@ -5,6 +5,8 @@ let program = require('commander')
 const vorpal = require('vorpal')()
 let config = require('./Configuration/config')
 let table = require('./commands/command.table')
+var os = require('os'),
+  clui = require('clui')
 
 vorpal
     .command('dev', 'run according to config file locally')
@@ -88,9 +90,9 @@ vorpal
   })
 
 vorpal
-  .command('top <identifier>', 'show network and memory usage of nodes')
+  .command('top', 'show network and memory usage of nodes')
   .action(function (args, callback) {
-
+    require('./commands/command.top')(callback, vorpal)
   })
 
 console.log(chalk.bold.green(`
@@ -115,8 +117,8 @@ process.on('SIGINT', () => {
 })
 
 // catches uncaught exceptions
-process.on('uncaughtException', (e, ee) => {
-  console.log(chalk.bold.red(`[uncaughtException] CLI Process About to exit.\n ${e}`))
-  config.clean()
-  process.exit()
-})
+// process.on('uncaughtException', (e, ee) => {
+//   console.log(chalk.bold.red(`[uncaughtException] CLI Process About to exit.\n ${e}`))
+//   config.clean()
+//   process.exit()
+// })

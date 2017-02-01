@@ -125,7 +125,7 @@ module.exports = {
     identifier = (index ? Object.keys(nodes)[identifier] : identifier)
     nodes[identifier].process.send({title: 'inspect' + (json ? 'JSON' : '')})
     nodes[identifier].process.once('message', (data) => {
-      if (data.title === 'inspect') {
+      if (data.title === 'inspect' + (json ? 'JSON' : '')) {
         cb(null, data.body)
       }
     })
