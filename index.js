@@ -27,8 +27,10 @@ vorpal
   .command('inspect <identifier>', 'show details of a node. identifier must be the name or id')
   .alias('insp')
   .action(function (args, callback) {
-    config.inspect(args.identifier, false)
-    callback()
+    config.inspect(args.identifier, false, (err, data) => {
+      this.log(data)
+      callback()
+    })
   })
 
 vorpal
@@ -43,14 +45,18 @@ vorpal
   .command('inspectJSON <identifier>', 'show details of a node. identifier must be the name or id')
   .alias('inspJ')
   .action(function (args, callback) {
-    config.inspect(args.identifier, true)
-    callback()
+    config.inspect(args.identifier, true, (err, data) => {
+      this.log(data)
+      callback()
+    })
   })
 
 vorpal
   .command('kill <identifier>', 'kill a node. identifier must be the name or id')
   .action(function (args, callback) {
-    config.kill(args.identifier, () => {
+    config.kill(args.identifier, (err) => {
+      if (err) console.log(chalk.bold.red(err))
+      else console.log(chalk.bold.green('Killed'))
       callback()
     })
   })
@@ -61,8 +67,11 @@ vorpal
   // .option('-p, -params <cmdParams>', 'additional command line parameters appended to the spawn args')
   .alias('dup')
   .action(function (args, callback) {
-    config.duplicate(args.identifier)
-    callback()
+    config.duplicate(args.identifier, (err) => {
+      if (err) console.log(chalk.bold.red(err))
+      else console.log(chalk.bold.green('Duplicated'))
+      callback()
+    })
   })
 
   // TODO support additional paramss
@@ -72,8 +81,16 @@ vorpal
   .alias('rest')
   .action(function (args, callback) {
     config.restart(args.identifier, (err) => {
+      if (err) console.log(chalk.bold.red(err))
+      else console.log(chalk.bold.green('Restarted'))
       callback()
     })
+  })
+
+vorpal
+  .command('top <identifier>', 'show network and memory usage of nodes')
+  .action(function (args, callback) {
+
   })
 
 console.log(chalk.bold.green(`

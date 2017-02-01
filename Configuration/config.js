@@ -16,23 +16,27 @@ module.exports = {
     }
   },
 
+  removeNode: function removeNode (aNode) {
+    delete nodes[aNode]
+  },
+
   create: function create (nodePath, params, cb) {
     let fork = require('./../commands/fork')
     fork.spawnMicroservice(nodePath, params, cb)
   },
 
-  duplicate: function duplicate (identifier) {
+  duplicate: function duplicate (identifier, cb) {
     const fork = require('./../commands/fork')
     let spawnargs
     if (!isNaN(identifier)) {
       if (identifier >= Object.keys(nodes).length) {
-        console.log(chalk.bold.red(`Index out of range`))
+        cb(`Index out of range`)
         return
       }
       spawnargs = nodes[Object.keys(nodes)[identifier]].process.spawnargs
     } else {
       if (Object.keys(nodes).indexOf(identifier) === -1) {
-        console.log(chalk.bold.red(`node with identifier ${identifier} not found`))
+        cb(`node with identifier ${identifier} not found`)
         return
       }
       spawnargs = nodes[identifier].process.spawnargs
@@ -48,56 +52,41 @@ module.exports = {
         } else {
           spawnargs[spawnargs.indexOf('--xyz-port') + 1] = String(port)
           fork.spawnMicroservice(spawnargs[1], spawnargs.slice(2).join(' '))
-        }
-      })
-    }
-
-    checkPort(port)
-  },
-
-  removeNode: function removeNode (aNode) {
-    delete nodes[aNode]
-  },
-
-  restart: function restart (identifier, cb) {
-    if (nodes[identifier]) {
-      let fork = require('./../commands/fork')
-      let _spawnArgs = nodes[identifier].process.spawnargs
-      let params = _spawnArgs.slice(2).join(' ')
-      let nodePath = _spawnArgs.slice(1, 2)[0]
-      this.kill(identifier, (err) => {
-        if (err) {
-          cb(err)
-        } else {
-          fork.spawnMicroservice(nodePath, params)
-          console.log(chalk.bold.green('Restarted'))
           cb(null)
         }
       })
+    }
+    checkPort(port)
+  },
+
+  restart: function restart (identifier, cb) {
+    let fork = require('./../commands/fork')
+    let _spawnArgs, nodePath, params
+    if (nodes[identifier]) {
+      _spawnArgs = nodes[identifier].process.spawnargs
+      params = _spawnArgs.slice(2).join(' ')
+      nodePath = _spawnArgs.slice(1, 2)[0]
     } else if (!isNaN(identifier)) {
       if (identifier >= Object.keys(nodes).length) {
-        console.log(chalk.bold.red(`Index ${identifier} out of range`))
         cb(`Index ${identifier} out of range`)
+        return
       } else {
-        let fork = require('./../commands/fork')
-        let _spawnArgs = nodes[Object.keys(nodes)[identifier]].process.spawnargs
-        let params = _spawnArgs.slice(2).join(' ')
-        let nodePath = _spawnArgs.slice(1, 2)[0]
-        this.kill(identifier, (err) => {
-          if (err) {
-            console.log(chalk.bold.red(err))
-            cb(err)
-          } else {
-            fork.spawnMicroservice(nodePath, params)
-            console.log(chalk.bold.green('Restarted'))
-            cb(null)
-          }
-        })
+        _spawnArgs = nodes[Object.keys(nodes)[identifier]].process.spawnargs
+        params = _spawnArgs.slice(2).join(' ')
+        nodePath = _spawnArgs.slice(1, 2)[0]
       }
     } else {
-      console.log(chalk.bold.red('Node not found'))
-      cb('Node not found')
+      cb(`Node ${identifier} not found`)
+      return
     }
+    this.kill(identifier, (err) => {
+      if (err) {
+        cb(err)
+      } else {
+        fork.spawnMicroservice(nodePath, params)
+        cb(null)
+      }
+    })
   },
 
   kill: function kill (identifier, cb) {
@@ -107,38 +96,39 @@ module.exports = {
       cb(null)
     } else if (!isNaN(identifier)) {
       if (identifier >= Object.keys(nodes).length) {
-        console.log(chalk.bold.red(`Index out of range`))
-        cb('out of range')
+        cb(`Index ${identifier} out of range`)
+        return
       }
       nodes[Object.keys(nodes)[identifier]].process.kill()
       delete nodes[Object.keys(nodes)[identifier]]
-      if (cb) cb(null)
+      cb(null)
     } else {
-      cb('Node not found')
+      cb(`Node ${identifier} not found`)
     }
   },
 
   inspect (identifier, json, cb) {
-    let err
+    let index = false
     if (!isNaN(identifier)) {
       if (identifier >= Object.keys(nodes).length) {
-        err = `Index out of range`
-        console.log(chalk.bold.red(err))
-        if (cb) { cb(err) }
+        cb(`Index ${identifier} out of range`)
+        return
       } else {
-        nodes[Object.keys(nodes)[identifier]].process.send({title: 'inspect' + (json ? 'JSON' : '')})
-        if (cb) { cb(null) }
+        index = true
       }
     } else {
       if (Object.keys(nodes).indexOf(identifier) === -1) {
-        err = `node with identifier ${identifier} not found`
-        console.log(chalk.bold.red(err))
-        if (cb) { cb(err) }
-      } else {
-        nodes[identifier].process.send({title: 'inspect' + (json ? 'JSON' : '')})
-        if (cb) { cb(null) }
+        cb(`node with identifier ${identifier} not founds`)
+        return
       }
     }
+    identifier = (index ? Object.keys(nodes)[identifier] : identifier)
+    nodes[identifier].process.send({title: 'inspect' + (json ? 'JSON' : '')})
+    nodes[identifier].process.once('message', (data) => {
+      if (data.title === 'inspect') {
+        cb(null, data.body)
+      }
+    })
   },
 
   clean () {
