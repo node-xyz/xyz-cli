@@ -72,6 +72,23 @@ module.exports = {
           cb(null)
         }
       })
+    } else if (!isNaN(identifier)) {
+      if (identifier >= Object.keys(nodes).length) {
+        cb(`Index ${identifier} out of range`)
+      } else {
+        let fork = require('./../commands/fork')
+        let _spawnArgs = nodes[Object.keys(nodes)[identifier]].process.spawnargs
+        let params = _spawnArgs.slice(2).join(' ')
+        let nodePath = _spawnArgs.slice(1, 2)[0]
+        this.kill(identifier, (err) => {
+          if (err) {
+            cb(err)
+          } else {
+            fork.spawnMicroservice(nodePath, params)
+            cb(null)
+          }
+        })
+      }
     } else {
       cb('Node not found')
     }

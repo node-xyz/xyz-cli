@@ -53,6 +53,15 @@ process.stdout.on('data', (data) => {
     })
   } else if ((args[0] == 'duplicate' || args[0] == 'dup') && args[1]) {
     config.duplicate(args[1], args.slice(2))
+  } else if (args[0] == 'restart' && args[1]) {
+    config.restart(args[1], (err) => {
+      if (err) {
+        console.log(chalk.bold.red(err))
+      } else {
+        console.log(chalk.bold.green('Restarted'))
+      }
+      process.stdout.write('$xyz >')
+    })
   } else if (!args[0].length) {
     process.stdout.write('$xyz >')
   } else {
