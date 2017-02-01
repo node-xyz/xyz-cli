@@ -16,7 +16,6 @@ function table () {
     index += 1
   }
   console.log(marked(table))
-  process.stdout.write('$xyz > ')
 }
 
 module.exports = table

@@ -6,8 +6,9 @@ let XYZ = require('xyz-core')
 let adminBootstrap = require('./../xyz-core-commands/xyz.admin.bootstrap')
 let config = require('./../Configuration/config')
 
-let dev = function (env, options) {
+let dev = function (args) {
   let rc
+  let env = args.options
   if (!env.config) {
     console.log(chalk.blue.bold('no config file given. reading from ./xyzrc.json'))
     try {
@@ -27,6 +28,7 @@ let dev = function (env, options) {
       systemConf: rc.systemConf
     })
     cliAdmin.bootstrap(adminBootstrap)
+    config.setAdmin(cliAdmin)
   }
 
   for (let node of rc.nodes) {
@@ -38,7 +40,6 @@ let dev = function (env, options) {
       port += 1
     }
   }
-  setTimeout(() => { require('./command.table')() }, 500)
 }
 
 module.exports = dev

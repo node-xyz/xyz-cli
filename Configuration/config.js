@@ -3,6 +3,7 @@ let util = require('./../commands/util')
 
 let nodes = {}
 let rc = {}
+let cliAdmin
 
 module.exports = {
 
@@ -69,11 +70,13 @@ module.exports = {
           cb(err)
         } else {
           fork.spawnMicroservice(nodePath, params)
+          console.log(chalk.bold.green('Restarted'))
           cb(null)
         }
       })
     } else if (!isNaN(identifier)) {
       if (identifier >= Object.keys(nodes).length) {
+        console.log(chalk.bold.red(`Index ${identifier} out of range`))
         cb(`Index ${identifier} out of range`)
       } else {
         let fork = require('./../commands/fork')
@@ -82,14 +85,17 @@ module.exports = {
         let nodePath = _spawnArgs.slice(1, 2)[0]
         this.kill(identifier, (err) => {
           if (err) {
+            console.log(chalk.bold.red(err))
             cb(err)
           } else {
             fork.spawnMicroservice(nodePath, params)
+            console.log(chalk.bold.green('Restarted'))
             cb(null)
           }
         })
       }
     } else {
+      console.log(chalk.bold.red('Node not found'))
       cb('Node not found')
     }
   },
@@ -146,5 +152,8 @@ module.exports = {
     rc = aRc
   },
 
-  getRc: () => rc
+  getRc () { return rc },
+
+  setAdmin (aCLIAdmin) { cliAdmin = aCLIAdmin },
+  getAdmin () { return cliAdmin }
 }
