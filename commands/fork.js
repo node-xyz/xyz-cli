@@ -9,9 +9,19 @@ let spawnMicroservice = function (msPath, params, cb) {
   let msProcess = fork(msPath, params.split(' '), {stdio: ['pipe', 'pipe', 'pipe', 'ipc']})
   let stream
 
+  function tempErrorOutput (code, signal) {
+    console.log(chalk.bold.red(`process ${msProcess.spawnargs[1]} error: CODE ${code} SIGNAL ${signal}`))
+  }
+
+  msProcess.on('exit', tempErrorOutput)
+
   msProcess.on('message', (data) => {
     if (data.title == 'init') {
       if (cb) { cb(null, 1) }
+
+      // remove temp listener
+      msProcess.removeListener('exit', tempErrorOutput)
+
       let selfConf = data.body
       let identifier = selfConf.name + '@' + selfConf.host + ':' + selfConf.port
       let stdio = selfConf.cli.stdio
@@ -39,9 +49,9 @@ let spawnMicroservice = function (msPath, params, cb) {
         msProcess.stderr.pipe(stream)
       }
 
-      msProcess.on(`exit`, (code) => {
+      msProcess.on(`error`, (error) => {
         config.removeNode(identifier)
-        console.error(chalk.bold.red(`[EXIT]child process for ${identifier} exited with code ${code}`))
+        console.error(chalk.bold.red(`[ERROR]child process for ${identifier} raised an error ${error.message}`))
       })
 
       msProcess.on('uncaughtException', () => {
@@ -52,6 +62,11 @@ let spawnMicroservice = function (msPath, params, cb) {
       msProcess.on('SIGTERM', () => {
         config.removeNode(identifier)
         console.error(chalk.bold.red(`[SIGTERM] child process for ${identifier}`))
+      })
+
+      msProcess.on(`exit`, (code, signal) => {
+        config.removeNode(identifier)
+        console.error(chalk.bold.red(`[EXIT]child process for ${identifier} exited with code ${code} signal ${signal}`))
       })
     }
   })

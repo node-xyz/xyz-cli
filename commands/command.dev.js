@@ -3,6 +3,7 @@ const CONSTANTS = require('./../Configuration/constants')
 let fork = require('./fork')
 let util = require('./util')
 let XYZ = require('xyz-core')
+let test = require('xyz-core/src/Config/config.global')
 let adminBootstrap = require('./../xyz-core-commands/xyz.admin.bootstrap')
 let config = require('./../Configuration/config')
 
@@ -23,10 +24,15 @@ let dev = function (args) {
   rc = util.MergeRecursive(CONSTANTS.defaultRcConfig, rc)
 
   if (env.xyzadmin) {
+    let cmdLineArgs
+    if (args.xyzCommandLineArgs) {
+      cmdLineArgs = util.argArrayToObject(args.xyzCommandLineArgs)
+    }
+
     let cliAdmin = new XYZ({
       selfConf: rc.selfConf,
       systemConf: rc.systemConf
-    })
+    }, cmdLineArgs)
     cliAdmin.bootstrap(adminBootstrap)
     config.setAdmin(cliAdmin)
   }

@@ -9,7 +9,7 @@ var os = require('os'),
   clui = require('clui')
 
 vorpal
-    .command('dev', 'run according to config file locally')
+    .command('dev [xyzCommandLineArgs...]', 'run according to config file locally. when -x is enabled, you can pass in command line args like `xyz-name foo` to override the name. Note that there is no `--xyz` in this case.')
     .option('-c, --config <conf>', 'xyz config file to use. if not, will use ./xyzrc.json')
     .option('-x, --xyzadmin', 'lunch an xyz core instance inside the cli process')
     .action(function (args, callback) {
@@ -65,7 +65,7 @@ vorpal
 
 // TODO support additional paramss
 vorpal
-  .command('duplicate <identifier> ', 'duplicate a node. identifier must be the name or id')
+  .command('duplicate <identifier>', 'duplicate a node. identifier must be the name or id')
   // .option('-p, -params <cmdParams>', 'additional command line parameters appended to the spawn args')
   .alias('dup')
   .action(function (args, callback) {
@@ -93,6 +93,12 @@ vorpal
   .command('top', 'show network and memory usage of nodes')
   .action(function (args, callback) {
     require('./commands/command.top')(callback, vorpal)
+  })
+
+vorpal
+  .command('log <identifier>', 'show the live content of the log file of a service')
+  .action(function (args, callback) {
+    callback()
   })
 
 console.log(chalk.bold.green(`

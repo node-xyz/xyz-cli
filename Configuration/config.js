@@ -11,6 +11,7 @@ module.exports = {
   // or -1
   // TODO implement this for cleaner code
   _chooseIdentifier (identifier) {
+
   },
 
   getNodes: () => nodes,

@@ -29,7 +29,16 @@ function isPortTaken (port, fn) {
   .listen(port)
 }
 
+function argArrayToObject (arr) {
+  let obj = {}
+  for (let i = 0; i < arr.length; i++) {
+    obj[arr[i].slice(4)] = arr[i + 1]
+    i += 1
+  }
+  return obj
+}
 module.exports = {
+  argArrayToObject: argArrayToObject,
   MergeRecursive: MergeRecursive,
   isPortTaken: isPortTaken
 }
