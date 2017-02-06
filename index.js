@@ -98,7 +98,7 @@ vorpal
 vorpal
   .command('log <identifier>', 'show the live content of the log file of a service')
   .action(function (args, callback) {
-    callback()
+    require('./commands/command.tail')(args.identifier, callback)
   })
 
 console.log(chalk.bold.green(`

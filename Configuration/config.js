@@ -8,10 +8,17 @@ let cliAdmin
 module.exports = {
 
   // will return one of instances in nodes
-  // or -1
-  // TODO implement this for cleaner code
-  _chooseIdentifier (identifier) {
-
+  // or false
+  chooseIdentifier (identifier, returnIdentifier = false) {
+    if (nodes[identifier]) {
+      return returnIdentifier ? identifier : nodes[identifier]
+    } else if (!isNaN(identifier)) {
+      if (identifier < Object.keys(nodes).length) {
+        return returnIdentifier ? Object.keys(nodes)[identifier] : nodes[Object.keys(nodes)[identifier]]
+      } else {
+        return false
+      }
+    }
   },
 
   getNodes: () => nodes,
@@ -35,19 +42,10 @@ module.exports = {
   duplicate: function duplicate (identifier, cb) {
     const fork = require('./../commands/fork')
     let spawnargs
-    if (!isNaN(identifier)) {
-      if (identifier >= Object.keys(nodes).length) {
-        cb(`Index out of range`)
-        return
-      }
-      spawnargs = nodes[Object.keys(nodes)[identifier]].process.spawnargs
-    } else {
-      if (Object.keys(nodes).indexOf(identifier) === -1) {
-        cb(`node with identifier ${identifier} not found`)
-        return
-      }
-      spawnargs = nodes[identifier].process.spawnargs
-    }
+    let node = this.chooseIdentifier(identifier)
+    if (!node) { cb(`invalid identifier ${identifier}`); return }
+    spawnargs = node.process.spawnargs
+
     // args are ready now, but we have to find a new port
     // note that ANY SPAWN ARG will have --xyz-port (what we read from xyzrc.json)
     let port = Number(spawnargs[spawnargs.indexOf('--xyz-port') + 1])
@@ -69,23 +67,13 @@ module.exports = {
   restart: function restart (identifier, cb) {
     let fork = require('./../commands/fork')
     let _spawnArgs, nodePath, params
-    if (nodes[identifier]) {
-      _spawnArgs = nodes[identifier].process.spawnargs
-      params = _spawnArgs.slice(2).join(' ')
-      nodePath = _spawnArgs.slice(1, 2)[0]
-    } else if (!isNaN(identifier)) {
-      if (identifier >= Object.keys(nodes).length) {
-        cb(`Index ${identifier} out of range`)
-        return
-      } else {
-        _spawnArgs = nodes[Object.keys(nodes)[identifier]].process.spawnargs
-        params = _spawnArgs.slice(2).join(' ')
-        nodePath = _spawnArgs.slice(1, 2)[0]
-      }
-    } else {
-      cb(`Node ${identifier} not found`)
-      return
-    }
+
+    let node = this.chooseIdentifier(identifier)
+    if (!node) { cb(`invalid identifier ${identifier}`); return }
+    spawnargs = node.process.spawnargs
+    params = spawnargs.slice(2).join(' ')
+    nodePath = spawnargs.slice(1, 2)[0]
+
     this.kill(identifier, (err) => {
       if (err) {
         cb(err)
@@ -97,41 +85,19 @@ module.exports = {
   },
 
   kill: function kill (identifier, cb) {
-    if (nodes[identifier]) {
-      nodes[identifier].process.kill('SIGTERM')
-      delete nodes[identifier]
-      cb(null)
-    } else if (!isNaN(identifier)) {
-      if (identifier >= Object.keys(nodes).length) {
-        cb(`Index ${identifier} out of range`)
-        return
-      }
-      nodes[Object.keys(nodes)[identifier]].process.kill()
-      delete nodes[Object.keys(nodes)[identifier]]
-      cb(null)
-    } else {
-      cb(`Node ${identifier} not found`)
-    }
+    let nodeIdentifier = this.chooseIdentifier(identifier, true)
+    if (!nodeIdentifier) { cb(`invalid identifier ${identifier}`); return }
+    nodes[nodeIdentifier].process.kill('SIGTERM')
+    delete nodes[nodeIdentifier]
+    cb(null)
   },
 
   inspect (identifier, json, cb) {
-    let index = false
-    if (!isNaN(identifier)) {
-      if (identifier >= Object.keys(nodes).length) {
-        cb(`Index ${identifier} out of range`)
-        return
-      } else {
-        index = true
-      }
-    } else {
-      if (Object.keys(nodes).indexOf(identifier) === -1) {
-        cb(`node with identifier ${identifier} not founds`)
-        return
-      }
-    }
-    identifier = (index ? Object.keys(nodes)[identifier] : identifier)
-    nodes[identifier].process.send({title: 'inspect' + (json ? 'JSON' : '')})
-    nodes[identifier].process.once('message', (data) => {
+    let node = this.chooseIdentifier(identifier)
+    if (!node) { cb(`invalid identifier ${identifier}`); return }
+
+    node.process.send({title: 'inspect' + (json ? 'JSON' : '')})
+    node.process.once('message', (data) => {
       if (data.title === 'inspect' + (json ? 'JSON' : '')) {
         cb(null, data.body)
       }
@@ -139,23 +105,11 @@ module.exports = {
   },
 
   network (identifier, cb) {
-    let index = false
-    if (!isNaN(identifier)) {
-      if (identifier >= Object.keys(nodes).length) {
-        cb(`Index ${identifier} out of range`)
-        return
-      } else {
-        index = true
-      }
-    } else {
-      if (Object.keys(nodes).indexOf(identifier) === -1) {
-        cb(`node with identifier ${identifier} not founds`)
-        return
-      }
-    }
-    identifier = (index ? Object.keys(nodes)[identifier] : identifier)
-    nodes[identifier].process.send({title: 'network'})
-    nodes[identifier].process.once('message', (data) => {
+    let node = this.chooseIdentifier(identifier)
+    if (!node) { cb(`invalid identifier ${identifier}`); return }
+
+    node.process.send({title: 'network'})
+    node.process.once('message', (data) => {
       if (data.title === 'network') {
         cb(null, data.body)
       }
