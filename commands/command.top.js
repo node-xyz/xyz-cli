@@ -16,6 +16,7 @@ let nodesInfo = {}
 
 turn = 0 // 0 = inspect - 1 = network - 2 = ping rate
 function updateInspect () {
+  nodes = Object.keys(config.getNodes())
   if (turn === 0) {
     for (let node of nodes) {
       config.inspect(node, true, function (_node, err, data) {
@@ -52,7 +53,6 @@ function updateInspect () {
 }
 
 function top (callback, vorpal) {
-  nodes = Object.keys(config.getNodes())
   vorpal = vorpal
   let output = ``
   console.log(`press ${chalk.bold('enter')} to exit\n`)

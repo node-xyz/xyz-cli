@@ -3,7 +3,7 @@ const fork = require('./../commands/fork.js')
 
 function CLIadminBootstrap (xyz) {
   xyz.register('/node/get', (body, resp) => {
-    resp.send(Object.keys(config.getNodes()))
+    resp.jsonify(Object.keys(config.getNodes()))
   })
 
   // create a new microservice. body should contain `nodePath` and `params`
@@ -14,9 +14,9 @@ function CLIadminBootstrap (xyz) {
   xyz.register('/node/create', (body, resp) => {
     config.create(body.nodePath, body.params, (err) => {
       if (err) {
-        resp.send(err)
+        resp.jsonify(err)
       } else {
-        resp.send('created')
+        resp.jsonify('created')
       }
     })
   })
@@ -31,9 +31,9 @@ function CLIadminBootstrap (xyz) {
   xyz.register('/node/restart', (body, resp) => {
     config.restart(body, (err) => {
       if (!err) {
-        resp.send('Restarted')
+        resp.jsonify('Restarted')
       } else {
-        resp.send(err, 401)
+        resp.jsonify(err, 401)
       }
     })
   })
@@ -47,9 +47,9 @@ function CLIadminBootstrap (xyz) {
   xyz.register('/node/kill', (body, resp) => {
     config.kill(body, (err) => {
       if (!err) {
-        resp.send('Killed')
+        resp.jsonify('Killed')
       } else {
-        resp.send(err, 401)
+        resp.jsonify(err, 401)
       }
     })
   })
@@ -58,9 +58,9 @@ function CLIadminBootstrap (xyz) {
   xyz.register('/node/duplicate', (body, resp) => {
     config.duplicate(body, (err) => {
       if (err) {
-        resp.send(err, 401)
+        resp.jsonify(err, 401)
       } else {
-        resp.send(`created`)
+        resp.jsonify(`created`)
       }
     })
   })
@@ -75,9 +75,9 @@ function CLIadminBootstrap (xyz) {
 
     config.inspect(body, false, (err, data) => {
       if (err) {
-        resp.send(err, 401)
+        resp.jsonify(err, 401)
       } else {
-        resp.send(data)
+        resp.jsonify(data)
       }
     })
   })
@@ -87,9 +87,9 @@ function CLIadminBootstrap (xyz) {
     // BUG: this will cause the inspect value to be printed to the console too
     config.inspect(body, true, (err, data) => {
       if (err) {
-        resp.send(err)
+        resp.jsonify(err)
       } else {
-        resp.send(data)
+        resp.jsonify(data)
       }
     })
   })
