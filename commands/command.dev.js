@@ -42,7 +42,7 @@ let dev = function (args) {
     node = util.MergeRecursive(CONSTANTS.defaultNodeConfig, node)
     console.log(chalk.yellow(`Spawning ${node.instance} instances for ${node.path}`))
     for (let i = 0; i < node.instance; i++) {
-      fork.spawnMicroservice(node.path, node.params + ` --xyz-port ${port} --xyz-cli.enable true --xyz-cli.stdio ${node.stdio}`)
+      fork.spawnMicroservice(node.path, node.params + ` --xyz-transport.0.port ${port} --xyz-cli.enable true --xyz-cli.stdio ${node.stdio}`)
       port += 1
     }
   }

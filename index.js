@@ -123,8 +123,10 @@ process.on('SIGINT', () => {
 })
 
 // catches uncaught exceptions
-// process.on('uncaughtException', (e, ee) => {
-//   console.log(chalk.bold.red(`[uncaughtException] CLI Process About to exit.\n ${e}`))
-//   config.clean()
-//   process.exit()
-// })
+process.on('uncaughtException', (e, ee) => {
+  console.log(chalk.bold.red(`[uncaughtException] CLI Process About to exit.\n ${e}`))
+  config.clean()
+  process.exit()
+})
+
+module.exports = require('./commands/test')

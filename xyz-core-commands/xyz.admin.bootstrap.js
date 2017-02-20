@@ -16,7 +16,7 @@ function CLIadminBootstrap (xyz) {
       if (err) {
         resp.jsonify(err)
       } else {
-        resp.jsonify('created')
+        resp.jsonify('Done')
       }
     })
   })
@@ -31,7 +31,7 @@ function CLIadminBootstrap (xyz) {
   xyz.register('/node/restart', (body, resp) => {
     config.restart(body, (err) => {
       if (!err) {
-        resp.jsonify('Restarted')
+        resp.jsonify('Done')
       } else {
         resp.jsonify(err, 401)
       }
@@ -47,7 +47,7 @@ function CLIadminBootstrap (xyz) {
   xyz.register('/node/kill', (body, resp) => {
     config.kill(body, (err) => {
       if (!err) {
-        resp.jsonify('Killed')
+        resp.jsonify('Done')
       } else {
         resp.jsonify(err, 401)
       }
@@ -60,7 +60,7 @@ function CLIadminBootstrap (xyz) {
       if (err) {
         resp.jsonify(err, 401)
       } else {
-        resp.jsonify(`created`)
+        resp.jsonify(`Done`)
       }
     })
   })

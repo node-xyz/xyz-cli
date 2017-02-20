@@ -48,14 +48,14 @@ module.exports = {
 
     // args are ready now, but we have to find a new port
     // note that ANY SPAWN ARG will have --xyz-port (what we read from xyzrc.json)
-    let port = Number(spawnargs[spawnargs.indexOf('--xyz-port') + 1])
+    let port = Number(spawnargs[spawnargs.indexOf('--xyz-transport.0.port') + 1])
     let checkPort = function (port) {
       util.isPortTaken(port, (err, _takne) => {
         if (_takne) {
           port = port + 1
           checkPort(port)
         } else {
-          spawnargs[spawnargs.indexOf('--xyz-port') + 1] = String(port)
+          spawnargs[spawnargs.indexOf('--xyz-transport.0.port') + 1] = String(port)
           fork.spawnMicroservice(spawnargs[1], spawnargs.slice(2).join(' '))
           cb(null)
         }

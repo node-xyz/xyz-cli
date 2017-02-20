@@ -8,9 +8,9 @@ module.exports = {
   },
   defaultRcConfig: {
     selfConf: {
-      logLevel: 'info',
+      logLevel: 'verbose',
       name: 'xyz-admin',
-      port: 9000,
+      transport: [{type: 'HTTP', port: 9000}],
       host: '127.0.0.1'
     },
     systemConf: {}

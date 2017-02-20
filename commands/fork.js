@@ -10,21 +10,31 @@ let spawnMicroservice = function (msPath, params, cb) {
   let stream
 
   function tempErrorOutput (code, signal) {
-    console.log(chalk.bold.red(`process ${msProcess.spawnargs[1]} error: CODE ${code} SIGNAL ${signal}`))
+    console.log(chalk.bold.red(`[ERR BEFORE LUNCH] process ${msProcess.spawnargs[1]} error: CODE ${code} SIGNAL ${signal}`))
   }
+
+  // DEBUG ONLY
+  // TODO
+  // one solution is to uncomment this, do nothing if console is the stdout
+  // and unbound them if file is. think it will work
+  // msProcess.stdout.on('data', function (data) {
+  //   process.stdout.write(data.toString())
+  // })
+  // msProcess.stderr.on('data', function (data) {
+  //   process.stderr.write(data)
+  // })
 
   msProcess.on('exit', tempErrorOutput)
 
-  msProcess.on('message', (data) => {
+  msProcess.on('message', function (_cb, data) {
     if (data.title == 'init') {
-      if (cb) { cb(null, 1) }
-
       // remove temp listener
       msProcess.removeListener('exit', tempErrorOutput)
 
       let selfConf = data.body
-      let identifier = selfConf.name + '@' + selfConf.host + ':' + selfConf.port
+      let identifier = selfConf.name + '@' + selfConf.host + ':' + selfConf.transport[0].port
       let stdio = selfConf.cli.stdio
+      if (_cb) { _cb(null, msProcess, identifier) }
       config.addNode(identifier, msProcess, selfConf)
 
       console.log(chalk.blue(`process ${chalk.bold(identifier)} successfully lunched. writing output to ${stdio} [${msProcess.spawnargs.slice(2).join(' ')}]`))
@@ -69,7 +79,7 @@ let spawnMicroservice = function (msPath, params, cb) {
         console.error(chalk.bold.red(`[EXIT]child process for ${identifier} exited with code ${code} signal ${signal}`))
       })
     }
-  })
+  }.bind(null, cb))
 }
 
 module.exports = {

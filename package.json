@@ -18,8 +18,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "mocha": "^2.5.3",
-    "mock-stdin": "latest"
+    "mocha": "^2.5.3"
   },
   "dependencies": {
     "always-tail": "^0.2.0",
