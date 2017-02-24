@@ -10,9 +10,9 @@ function CLIadminBootstrap (xyz) {
   // example:
   // curl -X POST -H "Content-Type: application/json" -d \
   //    '{"service":"/node/create", \
-  //      "userPayload":{"nodePath":"stringMS/string.ms.js", "params": "--xyz-logLevel info --xyz-allowJoin true --xyz-name math.ms --xyz-port 6000 --xyz-cli.enable true --xyz-cli.stdio file"}}'  -i "http://localhost:9000/call"
+  //      "userPayload":{"path":"stringMS/string.ms.js", "params": "--xyz-logLevel info --xyz-allowJoin true --xyz-name math.ms --xyz-port 6000 --xyz-cli.enable true --xyz-cli.stdio file"}}'  -i "http://localhost:9000/call"
   xyz.register('/node/create', (body, resp) => {
-    config.create(body.nodePath, body.params, (err) => {
+    config.create(body.path, body.params, (err) => {
       if (err) {
         resp.jsonify(err)
       } else {

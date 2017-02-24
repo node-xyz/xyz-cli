@@ -29,9 +29,9 @@ it('inspect events', function (done) {
 it('network event', function (done) {
   setTimeout(() => {
     _send('network', processes['math.ms@127.0.0.1:4000'], (data) => {
-      // they are sending with sendToAll and 1 msg/sec
+      // two string clients are sending with 10msg/sec rate
       expect(data.snd).to.be.at.least(5)
-      expect(data.rcv).to.be.at.least(5)
+      expect(data.rcv).to.be.at.least(15)
       done()
     })
   }, 5000)

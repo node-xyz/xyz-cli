@@ -2,7 +2,7 @@
   "nodes": [
     {
       "path": "test/stringMS/string.ms.js",
-      "instance": 2,
+      "instance": 3,
       "port": 5000,
       "stdio": "file",
       "params": ""

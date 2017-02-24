@@ -5,31 +5,37 @@ const CONSTANTS = require('./../Configuration/constants')
 const fork = require('child_process').fork
 const config = require('./../Configuration/config')
 
-let spawnMicroservice = function (msPath, params, cb) {
-  let msProcess = fork(msPath, params.split(' '), {stdio: ['pipe', 'pipe', 'pipe', 'ipc']})
+let spawnMicroservice = function (nodePath, params, cb) {
+  let msProcess = fork(nodePath, params.split(' '), {stdio: ['pipe', 'pipe', 'pipe', 'ipc']})
   let stream
 
   function tempErrorOutput (code, signal) {
-    console.log(chalk.bold.red(`[ERR BEFORE LUNCH] process ${msProcess.spawnargs[1]} error: CODE ${code} SIGNAL ${signal}`))
+    console.log(chalk.bold.red(`[EXIT BEFORE LUNCH] process ${msProcess.spawnargs[1]} error: CODE ${code} SIGNAL ${signal}`))
+  }
+
+  function tempStdoutOutput (data) {
+    // console.log(`${chalk.bold('[BEFORE LUNCH stdout.data]')} ${data.toString()}`)
+  }
+
+  function tempStderrOutput (data) {
+    // console.log(`${chalk.bold('[BEFORE LUNCH stderr.data]')} ${data.toString()}`)
   }
 
   // DEBUG ONLY
   // TODO
   // one solution is to uncomment this, do nothing if console is the stdout
   // and unbound them if file is. think it will work
-  // msProcess.stdout.on('data', function (data) {
-  //   process.stdout.write(data.toString())
-  // })
-  // msProcess.stderr.on('data', function (data) {
-  //   process.stderr.write(data)
-  // })
-
+  
+  // msProcess.stdout.on('data', tempStdoutOutput)
+  // msProcess.stderr.on('data', tempErrorOutput)
   msProcess.on('exit', tempErrorOutput)
 
   msProcess.on('message', function (_cb, data) {
     if (data.title == 'init') {
       // remove temp listener
       msProcess.removeListener('exit', tempErrorOutput)
+      msProcess.stdout.removeAllListeners('data', tempStdoutOutput)
+      msProcess.stderr.removeAllListeners('data', tempStderrOutput)
 
       let selfConf = data.body
       let identifier = selfConf.name + '@' + selfConf.host + ':' + selfConf.transport[0].port
@@ -45,7 +51,7 @@ let spawnMicroservice = function (msPath, params, cb) {
         })
 
         msProcess.stderr.on('data', function (data) {
-          process.stderr.write(data)
+          process.stderr.write(data.toString())
         })
       } else if (stdio === CONSTANTS.STDIO.file) {
         let dirname = path.dirname(msProcess.spawnargs.slice(1, 2)[0])
