@@ -1,4 +1,4 @@
-let fn = require('./../xyz-core/test/ms/mock.functions')
+let fn = require('./../mock.functions')
 let XYZ = require('xyz-core')
 
 var mathMs = new XYZ({

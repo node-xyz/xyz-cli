@@ -14,11 +14,11 @@ let spawnMicroservice = function (nodePath, params, cb) {
   }
 
   function tempStdoutOutput (data) {
-    // console.log(`${chalk.bold('[BEFORE LUNCH stdout.data]')} ${data.toString()}`)
+    console.log(`${chalk.bold('[BEFORE LUNCH stdout.data]')} ${data.toString()}`)
   }
 
   function tempStderrOutput (data) {
-    // console.log(`${chalk.bold('[BEFORE LUNCH stderr.data]')} ${data.toString()}`)
+    console.log(`${chalk.bold('[BEFORE LUNCH stderr.data]')} ${data.toString()}`)
   }
 
   // DEBUG ONLY
@@ -34,8 +34,8 @@ let spawnMicroservice = function (nodePath, params, cb) {
     if (data.title == 'init') {
       // remove temp listener
       msProcess.removeListener('exit', tempErrorOutput)
-      msProcess.stdout.removeAllListeners('data', tempStdoutOutput)
-      msProcess.stderr.removeAllListeners('data', tempStderrOutput)
+      // msProcess.stdout.removeAllListeners('data', tempStdoutOutput)
+      // msProcess.stderr.removeAllListeners('data', tempStderrOutput)
 
       let selfConf = data.body
       let identifier = selfConf.name + '@' + selfConf.host + ':' + selfConf.transport[0].port
