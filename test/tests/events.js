@@ -47,7 +47,7 @@ it('network event', function (done) {
 })
 
 it('ping event', function (done) {
-  _send('pingRate', processes[identifiers[0]], (data) => {
+  _send('pingRate', '0'], (data) => {
     expect(data.interval).to.be.at.least(0)
     done()
   })
