@@ -7,39 +7,55 @@ let processes
 let identifiers = []
 let TESTER
 
-before(function (done) {
+beforeEach(function (done) {
   test.setUpTestEnv((p) => {
     processes = p
     identifiers = Object.keys(processes)
     TESTER = test.getTester()
-    done()
+    console.log('##############################################################')
+    setTimeout(done, 1000)
+  })
+})
+
+afterEach(function () {
+  for (let p in processes) {
+    processes[p].kill()
+  }
+})
+
+it('kill', function (done) {
+  TESTER.call({servicePath: '/node/kill', payload: identifiers[1]}, (err, body, resp) => {
+    expect(body).to.equal('Done')
+    TESTER.call({servicePath: 'node/get'}, (err, body) => {
+      expect(body.length).to.equal(TOTAL - 1)
+      done()
+    })
   })
 })
 
 it('duplicate', function (done) {
-  TESTER.call({servicePath: '/node/duplicate', payload: identifiers[0]}, (err, body, resp) => {
+  TESTER.call({servicePath: '/node/duplicate', payload: '0' }, (err, body, resp) => {
     expect(body).to.equal('Done')
-    done()
+    TESTER.call({servicePath: 'node/get'}, (err, body) => {
+      expect(body.length).to.equal(TOTAL)
+      done()
+    })
   })
 })
 
 it('restart', function (done) {
   TESTER.call({servicePath: '/node/restart', payload: identifiers[0]}, (err, body, resp) => {
     expect(body).to.equal('Done')
-    done()
-  })
-})
-
-it('kill', function (done) {
-  TESTER.call({servicePath: '/node/kill', payload: identifiers[1]}, (err, body, resp) => {
-    expect(body).to.equal('Done')
-    done()
+    TESTER.call({servicePath: 'node/get'}, (err, body) => {
+      expect(body.length).to.equal(TOTAL)
+      done()
+    })
   })
 })
 
 it('get', function (done) {
   TESTER.call({servicePath: 'node/get'}, (err, body, resp) => {
-    expect(body.length).to.be.equal(3)
+    expect(body.length).to.be.equal(TOTAL)
     done()
   })
 })
@@ -59,10 +75,4 @@ it('create', function (done) {
       done()
     })
   })
-})
-
-after(function () {
-  for (let p in processes) {
-    processes[p].kill()
-  }
 })

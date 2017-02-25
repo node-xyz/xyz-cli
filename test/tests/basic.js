@@ -7,13 +7,20 @@ let processes
 let identifiers = []
 let TESTER
 
-before(function (done) {
+beforeEach(function (done) {
   test.setUpTestEnv((p) => {
     processes = p
     identifiers = Object.keys(processes)
     TESTER = test.getTester()
-    done()
+    console.log('##############################################################')
+    setTimeout(done, 1000)
   })
+})
+
+afterEach(function () {
+  for (let p in processes) {
+    processes[p].kill()
+  }
 })
 
 it('basic setup for tester env', function (done) {
@@ -38,10 +45,4 @@ it('a basic call test', function (done) {
     expect(body).to.equal('YO')
     done()
   })
-})
-
-after(function () {
-  for (let p in processes) {
-    processes[p].kill()
-  }
 })

@@ -25,7 +25,7 @@ let spawnMicroservice = function (nodePath, params, cb) {
   // TODO
   // one solution is to uncomment this, do nothing if console is the stdout
   // and unbound them if file is. think it will work
-  
+
   // msProcess.stdout.on('data', tempStdoutOutput)
   // msProcess.stderr.on('data', tempErrorOutput)
   msProcess.on('exit', tempErrorOutput)

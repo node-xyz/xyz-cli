@@ -7,13 +7,20 @@ let processes
 let identifiers = []
 let TESTER
 
-before(function (done) {
+beforeEach(function (done) {
   test.setUpTestEnv((p) => {
     processes = p
     identifiers = Object.keys(processes)
     TESTER = test.getTester()
-    done()
+    console.log('##############################################################')
+    setTimeout(done, 1000)
   })
+})
+
+afterEach(function () {
+  for (let p in processes) {
+    processes[p].kill()
+  }
 })
 
 it('inspect events', function (done) {
@@ -28,14 +35,15 @@ it('inspect events', function (done) {
 
 it('network event', function (done) {
   setTimeout(() => {
-    _send('network', processes['math.ms@127.0.0.1:4000'], (data) => {
+    let mathIdent = identifiers.filter((id) => id.match(/math/) !== null)
+    _send('network', processes[mathIdent[0]], (data) => {
       // two string clients are sending with 10msg/sec rate
       expect(data.snd).to.be.at.least(5)
       expect(data.rcv).to.be.at.least(15)
       done()
     })
-  }, 5000)
-  this.timeout(6000)
+  }, 7000)
+  this.timeout(8000)
 })
 
 it('ping event', function (done) {
@@ -43,10 +51,4 @@ it('ping event', function (done) {
     expect(data.interval).to.be.at.least(0)
     done()
   })
-})
-
-after(function () {
-  for (let p in processes) {
-    processes[p].kill()
-  }
 })
