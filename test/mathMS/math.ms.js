@@ -6,7 +6,7 @@ var mathMs = new XYZ({
     name: 'math.ms',
     host: '127.0.0.1'
   },
-  systemConf: { nodes: []}
+  systemConf: { nodes: []}.
 })
 
 mathMs.register('/math/decimal/mul', fn.mul)

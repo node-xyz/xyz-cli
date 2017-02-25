@@ -5,37 +5,22 @@ const CONSTANTS = require('./../Configuration/constants')
 const fork = require('child_process').fork
 const config = require('./../Configuration/config')
 
-let spawnMicroservice = function (nodePath, params, cb) {
+let spawnMicroservice = function (nodePath, params, cb, pipErr = false) {
   let msProcess = fork(nodePath, params.split(' '), {stdio: ['pipe', 'pipe', 'pipe', 'ipc']})
   let stream
 
-  function tempErrorOutput (code, signal) {
-    console.log(chalk.bold.red(`[EXIT BEFORE LUNCH] process ${msProcess.spawnargs[1]} error: CODE ${code} SIGNAL ${signal}`))
-  }
-
-  function tempStdoutOutput (data) {
-    console.log(`${chalk.bold('[BEFORE LUNCH stdout.data]')} ${data.toString()}`)
-  }
-
   function tempStderrOutput (data) {
-    console.log(`${chalk.bold('[BEFORE LUNCH stderr.data]')} ${data.toString()}`)
+    process.stdout.write(`${chalk.bold.yellow('[TEMP DEBUG STDERR]')} ${data.toString()}`)
   }
 
-  // DEBUG ONLY
-  // TODO
-  // one solution is to uncomment this, do nothing if console is the stdout
-  // and unbound them if file is. think it will work
-
-  // msProcess.stdout.on('data', tempStdoutOutput)
-  // msProcess.stderr.on('data', tempErrorOutput)
-  msProcess.on('exit', tempErrorOutput)
+  if (pipErr) {
+    msProcess.stderr.on('data', tempStderrOutput)
+  }
 
   msProcess.on('message', function (_cb, data) {
     if (data.title == 'init') {
       // remove temp listener
-      msProcess.removeListener('exit', tempErrorOutput)
-      // msProcess.stdout.removeAllListeners('data', tempStdoutOutput)
-      // msProcess.stderr.removeAllListeners('data', tempStderrOutput)
+      msProcess.stderr.removeAllListeners('data', tempStderrOutput)
 
       let selfConf = data.body
       let identifier = selfConf.name + '@' + selfConf.host + ':' + selfConf.transport[0].port

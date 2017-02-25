@@ -27,7 +27,7 @@ afterEach(function () {
 it('inspect events', function (done) {
   _send('inspect', processes[identifiers[0]], (data) => {
     expect(data.length).to.be.at.least(1000)
-    _send('inspectJSON', processes[identifiers[0]], (data) => {
+    _send('inspectJSON', processes[identifiers[1]], (data) => {
       expect(typeof (data)).to.equal('object')
       done()
     })

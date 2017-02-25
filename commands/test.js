@@ -43,7 +43,7 @@ exports.setUpTestEnv = function (cb) {
           processes[identifier] = msProcess
           created += 1
           if (created === total) cb(processes)
-        })
+        }, true)
       port += 1
     }
   }
