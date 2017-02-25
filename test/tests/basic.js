@@ -12,7 +12,7 @@ beforeEach(function (done) {
     processes = p
     identifiers = Object.keys(processes)
     TESTER = test.getTester()
-    console.log('##############################################################')
+    console.log('#####################################################################################')
     setTimeout(done, 1000)
   })
 })

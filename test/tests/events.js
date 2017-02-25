@@ -8,12 +8,13 @@ let identifiers = []
 let TESTER
 
 beforeEach(function (done) {
+  this.timeout(3500)
   test.setUpTestEnv((p) => {
     processes = p
     identifiers = Object.keys(processes)
     TESTER = test.getTester()
-    console.log('##############################################################')
-    setTimeout(done, 1000)
+    console.log('#####################################################################################')
+    setTimeout(done, 3000)
   })
 })
 
