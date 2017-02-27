@@ -26,29 +26,35 @@ afterEach(function () {
 it('kill', function (done) {
   TESTER.call({servicePath: '/node/kill', payload: identifiers[1]}, (err, body, resp) => {
     expect(body).to.equal('Done')
-    TESTER.call({servicePath: 'node/get'}, (err, body) => {
-      expect(body.length).to.equal(TOTAL - 1)
-      done()
-    })
+    setTimeout(() => {
+      TESTER.call({servicePath: 'node/get'}, (err, body) => {
+        expect(body.length).to.equal(TOTAL - 1)
+        done()
+      })
+    }, 800)
   })
 })
 
 it('duplicate', function (done) {
   TESTER.call({servicePath: '/node/duplicate', payload: '0' }, (err, body, resp) => {
     expect(body).to.equal('Done')
-    TESTER.call({servicePath: 'node/get'}, (err, body) => {
-      expect(body.length).to.equal(TOTAL)
-      done()
-    })
+    setTimeout(() => {
+      TESTER.call({servicePath: 'node/get'}, (err, body) => {
+        expect(body.length).to.equal(TOTAL + 1)
+        done()
+      })
+    }, 800)
   })
 })
 
 it('restart', function (done) {
   TESTER.call({servicePath: '/node/restart', payload: identifiers[0]}, (err, body, resp) => {
     expect(body).to.equal('Done')
-    TESTER.call({servicePath: 'node/get'}, (err, body) => {
-      expect(body.length).to.equal(TOTAL)
-      done()
+    setTimeout(() => {
+      TESTER.call({servicePath: 'node/get'}, (err, body) => {
+        expect(body.length).to.equal(TOTAL)
+        done()
+      }, 800)
     })
   })
 })
@@ -69,10 +75,13 @@ it('create', function (done) {
       params: `--xyz-transport.0.port ${_PORT} --xyz-cli.enable true --xyz-cli.stdio file`
     }
   }, (err, body, resp) => {
-    TESTER.call({servicePath: 'node/get'}, (err, body) => {
-      expect(body.length).to.equal(4)
-      expect(body[body.length - 1]).to.equal(`string.ms@127.0.0.1:${_PORT}`)
-      done()
-    })
+    expect(body).to.equal('Done')
+    setTimeout(() => {
+      TESTER.call({servicePath: 'node/get'}, (err, body) => {
+        expect(body.length).to.equal(4)
+        expect(body[body.length - 1]).to.equal(`string.ms@127.0.0.1:${_PORT}`)
+        done()
+      })
+    }, 800)
   })
 })

@@ -8,7 +8,6 @@ let identifiers = []
 let TESTER
 
 beforeEach(function (done) {
-  this.timeout(3500)
   test.setUpTestEnv((p) => {
     processes = p
     identifiers = Object.keys(processes)
@@ -16,6 +15,7 @@ beforeEach(function (done) {
     console.log('#####################################################################################')
     setTimeout(done, 3000)
   })
+  this.timeout(5500)
 })
 
 afterEach(function () {
@@ -27,11 +27,14 @@ afterEach(function () {
 it('inspect events', function (done) {
   _send('inspect', processes[identifiers[0]], (data) => {
     expect(data.length).to.be.at.least(1000)
-    _send('inspectJSON', processes[identifiers[1]], (data) => {
-      expect(typeof (data)).to.equal('object')
-      done()
-    })
+    setTimeout(() => {
+      _send('inspectJSON', processes[identifiers[1]], (data) => {
+        expect(typeof (data)).to.equal('object')
+        done()
+      })
+    }, 1000)
   })
+  this.timeout(4000)
 })
 
 it('network event', function (done) {
@@ -43,13 +46,16 @@ it('network event', function (done) {
       expect(data.rcv).to.be.at.least(15)
       done()
     })
-  }, 7000)
-  this.timeout(8000)
+  }, 13000)
+  this.timeout(15000)
 })
 
 it('ping event', function (done) {
-  _send('pingRate', processes[identifiers[0]], (data) => {
-    expect(data.interval).to.be.at.least(0)
-    done()
-  })
+  setTimeout(() => {
+    _send('pingRate', processes[identifiers[0]], (data) => {
+      expect(data.interval).to.be.at.least(0)
+      done()
+    })
+  }, 4000)
+  this.timeout(5000)
 })

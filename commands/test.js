@@ -54,7 +54,9 @@ exports.getTester = function () {
 }
 
 exports.sendMessage = function (msg, _process, callback) {
+  console.log('message sender sending ', msg)
   _process.once('message', (data) => {
+    console.log('message sender received ', data)
     if (data.title === msg) {
       callback(data.body)
     }
