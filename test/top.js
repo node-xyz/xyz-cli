@@ -9,7 +9,7 @@ describe('basic', function () {
 })
 
 describe('admin', function () {
-  describe('shared functions is xyz admin adn tester.', function () {
+  describe('shared functions in xyz admin and tester.', function () {
     require('./tests/admin')
   })
 })

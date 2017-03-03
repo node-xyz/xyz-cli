@@ -8,6 +8,7 @@ let identifiers = []
 let TESTER
 
 beforeEach(function (done) {
+  this.timeout(5000)
   test.setUpTestEnv((p) => {
     processes = p
     identifiers = Object.keys(processes)
@@ -78,7 +79,7 @@ it('create', function (done) {
     expect(body).to.equal('Done')
     setTimeout(() => {
       TESTER.call({servicePath: 'node/get'}, (err, body) => {
-        expect(body.length).to.equal(4)
+        expect(body.length).to.equal(TOTAL + 1)
         expect(body[body.length - 1]).to.equal(`string.ms@127.0.0.1:${_PORT}`)
         done()
       })

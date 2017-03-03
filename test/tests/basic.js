@@ -8,6 +8,7 @@ let identifiers = []
 let TESTER
 
 beforeEach(function (done) {
+  this.timeout(5000)
   test.setUpTestEnv((p) => {
     processes = p
     identifiers = Object.keys(processes)
