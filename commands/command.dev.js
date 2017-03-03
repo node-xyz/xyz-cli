@@ -7,7 +7,7 @@ let test = require('xyz-core/src/Config/config.global')
 let adminBootstrap = require('./../xyz-core-commands/xyz.admin.bootstrap')
 let config = require('./../Configuration/config')
 
-let dev = function (args) {
+let dev = function (args, cb) {
   let rc
   let env = args.options
   if (!env.config) {
@@ -37,15 +37,34 @@ let dev = function (args) {
     config.setAdmin(cliAdmin)
   }
 
-  for (let node of rc.nodes) {
-    let port = node.port
-    node = util.MergeRecursive(CONSTANTS.defaultNodeConfig, node)
-    console.log(chalk.yellow(`Spawning ${node.instance} instances for ${node.path}`))
-    for (let i = 0; i < node.instance; i++) {
-      fork.spawnMicroservice(node.path, node.params + ` --xyz-transport.0.port ${port} --xyz-cli.enable true --xyz-cli.stdio ${node.stdio}`)
-      port += 1
+  let nodeIndex = 0
+  let instanceIndex = 0
+  let DELAY = env.delay || 500
+
+  function createNext () {
+    let node = rc.nodes[nodeIndex]
+    // done
+    if (!node) {
+      cb()
+      return
     }
+
+    node = util.MergeRecursive(CONSTANTS.defaultNodeConfig, node)
+    let port = (node.port) + (instanceIndex * node.increment)
+    fork.spawnMicroservice(
+      node.path,
+      node.params + ` --xyz-transport.0.port ${port} --xyz-cli.enable true --xyz-cli.stdio ${node.stdio} ${env.xyzadmin && env.appendadmin ? '--xys-node 127.0.0.1:9000' : ''}`, () => {}, env.errlog)
+
+    instanceIndex++
+    if (instanceIndex >= node.instance) {
+      instanceIndex = 0
+      nodeIndex++
+    }
+
+    setTimeout(createNext, DELAY)
   }
+
+  createNext()
 }
 
 module.exports = dev

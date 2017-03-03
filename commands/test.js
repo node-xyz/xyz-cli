@@ -5,11 +5,13 @@ let util = require('./util')
 let XYZ = require('xyz-core')
 
 let tester
-exports.setUpTestEnv = function (cb) {
+const DELAY = 500
+exports.setUpTestEnv = function (cb, rcFile) {
+  rcFile = rcFile || 'xyztestrc.json'
   try {
-    rc = require(`${process.cwd()}/xyztestrc.json`)
+    rc = require(`${process.cwd()}/${rcFile}`)
   } catch (e) {
-    console.log(chalk.red.bold('config file not found. terminating'))
+    console.log(chalk.red.bold(`config file [${process.cwd()}/${rcFile}] not found. terminating`))
     process.exit()
   }
 
@@ -32,21 +34,52 @@ exports.setUpTestEnv = function (cb) {
   for (let node of rc.nodes) {
     total += node.instance
   }
-  for (let node of rc.nodes) {
-    let port = node.port
-    node = util.MergeRecursive(CONSTANTS.defaultNodeConfig, node)
-    for (let i = 0; i < node.instance; i++) {
-      fork.spawnMicroservice(
-        node.path,
-        node.params + ` --xyz-transport.0.port ${port} --xyz-cli.enable true --xyz-cli.stdio ${node.stdio} --xys-node 127.0.0.1:9000`,
-        function (err, msProcess, identifier) {
-          processes[identifier] = msProcess
-          created += 1
-          if (created === total) cb(processes)
-        }, true)
-      port += 1
+
+  let nodeIndex = 0
+  let instanceIndex = 0
+  const DELAY = 500
+
+  function createNext () {
+    let node = rc.nodes[nodeIndex]
+    if (!node) {
+      cb(processes)
+      return
     }
+    node = util.MergeRecursive(CONSTANTS.defaultNodeConfig, node)
+    // done
+    let port = (node.port) + (instanceIndex * node.increment)
+    fork.spawnMicroservice(
+      node.path,
+      node.params + ` --xyz-transport.0.port ${port} --xyz-cli.enable true --xyz-cli.stdio ${node.stdio} --xys-node 127.0.0.1:9000`,
+      function (err, msProcess, identifier) {
+        processes[identifier] = msProcess
+      }, true)
+
+    instanceIndex++
+    if (instanceIndex >= node.instance) {
+      instanceIndex = 0
+      nodeIndex++
+    }
+
+    setTimeout(createNext, DELAY)
   }
+
+  createNext()
+  // for (let node of rc.nodes) {
+  //   let port = node.port
+  //   node = util.MergeRecursive(CONSTANTS.defaultNodeConfig, node)
+  //   for (let i = 0; i < node.instance; i++) {
+  //     fork.spawnMicroservice(
+  //       node.path,
+  //       node.params + ` --xyz-transport.0.port ${port} --xyz-cli.enable true --xyz-cli.stdio ${node.stdio} --xys-node 127.0.0.1:9000`,
+  //       function (err, msProcess, identifier) {
+  //         processes[identifier] = msProcess
+  //         created += 1
+  //         if (created === total) cb(processes)
+  //       }, true)
+  //     port += node.increment
+  //   }
+  // }
 }
 
 exports.getTester = function () {
@@ -54,9 +87,7 @@ exports.getTester = function () {
 }
 
 exports.sendMessage = function (msg, _process, callback) {
-  console.log('message sender sending ', msg)
   _process.once('message', (data) => {
-    console.log('message sender received ', data)
     if (data.title === msg) {
       callback(data.body)
     }

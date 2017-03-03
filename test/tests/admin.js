@@ -36,7 +36,7 @@ it('kill', function (done) {
 })
 
 it('duplicate', function (done) {
-  TESTER.call({servicePath: '/node/duplicate', payload: '0' }, (err, body, resp) => {
+  TESTER.call({servicePath: '/node/duplicate', payload: '0'}, (err, body, resp) => {
     expect(body).to.equal('Done')
     setTimeout(() => {
       TESTER.call({servicePath: 'node/get'}, (err, body) => {

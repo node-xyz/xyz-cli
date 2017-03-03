@@ -18,7 +18,7 @@ let spawnMicroservice = function (nodePath, params, cb, pipErr = false) {
   }
 
   msProcess.on('message', function (_cb, data) {
-    if (data.title == 'init') {
+    if (data.title === 'init') {
       // remove temp listener
       msProcess.stderr.removeAllListeners('data', tempStderrOutput)
 
@@ -45,7 +45,7 @@ let spawnMicroservice = function (nodePath, params, cb, pipErr = false) {
           fs.mkdirSync(`${dirname}/log`)
         }
 
-        stream = fs.createWriteStream(`${dirname}/log/${identifier}.log`, {flags: 'w', autoClose: true })
+        stream = fs.createWriteStream(`${dirname}/log/${identifier}.log`, {flags: 'w', autoClose: true})
         msProcess.stdout.pipe(stream)
         msProcess.stderr.pipe(stream)
       }
@@ -55,15 +55,15 @@ let spawnMicroservice = function (nodePath, params, cb, pipErr = false) {
         console.error(chalk.bold.red(`[ERROR]child process for ${identifier} raised an error ${error.message}`))
       })
 
-      msProcess.on('uncaughtException', () => {
-        config.removeNode(identifier)
-        console.error(chalk.bold.red(`[uncaughtException] child process for ${identifier}`))
-      })
-
-      msProcess.on('SIGTERM', () => {
-        config.removeNode(identifier)
-        console.error(chalk.bold.red(`[SIGTERM] child process for ${identifier}`))
-      })
+      // msProcess.on('uncaughtException', () => {
+      //   config.removeNode(identifier)
+      //   console.error(chalk.bold.red(`[uncaughtException] child process for ${identifier}`))
+      // })
+      //
+      // msProcess.on('SIGTERM', () => {
+      //   config.removeNode(identifier)
+      //   console.error(chalk.bold.red(`[SIGTERM] child process for ${identifier}`))
+      // })
 
       msProcess.on(`exit`, (code, signal) => {
         config.removeNode(identifier)

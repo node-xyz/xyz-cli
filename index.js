@@ -12,9 +12,13 @@ vorpal
     .command('dev [xyzCommandLineArgs...]', 'run according to config file locally. when -x is enabled, you can pass in command line args like `xyz-name foo` to override the name. Note that there is no `--xyz` in this case.')
     .option('-c, --config <conf>', 'xyz config file to use. if not, will use ./xyzrc.json')
     .option('-x, --xyzadmin', 'lunch an xyz core instance inside the cli process')
+    .option('-e, --errlog', 'log additional info from a process while it is being lunched')
+    .option('-d, --delay <value>', 'delay between creating instances. default is 500ms')
     .action(function (args, callback) {
-      require('./commands/command.dev')(args)
-      callback()
+      require('./commands/command.dev')(args, () => {
+        table()
+        callback()
+      })
     })
 
 vorpal
