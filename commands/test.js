@@ -6,8 +6,7 @@ let XYZ = require('xyz-core')
 
 let tester
 const DELAY = 500
-exports.setUpTestEnv = function (cb, rcFile) {
-  rcFile = rcFile || 'xyztestrc.json'
+exports.setUpTestEnv = function (cb, rcFile = 'xyztestrc.json') {
   try {
     rc = require(`${process.cwd()}/${rcFile}`)
   } catch (e) {
@@ -65,21 +64,6 @@ exports.setUpTestEnv = function (cb, rcFile) {
   }
 
   createNext()
-  // for (let node of rc.nodes) {
-  //   let port = node.port
-  //   node = util.MergeRecursive(CONSTANTS.defaultNodeConfig, node)
-  //   for (let i = 0; i < node.instance; i++) {
-  //     fork.spawnMicroservice(
-  //       node.path,
-  //       node.params + ` --xyz-transport.0.port ${port} --xyz-cli.enable true --xyz-cli.stdio ${node.stdio} --xys-node 127.0.0.1:9000`,
-  //       function (err, msProcess, identifier) {
-  //         processes[identifier] = msProcess
-  //         created += 1
-  //         if (created === total) cb(processes)
-  //       }, true)
-  //     port += node.increment
-  //   }
-  // }
 }
 
 exports.getTester = function () {
