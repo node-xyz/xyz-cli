@@ -7,18 +7,18 @@ let processes
 let identifiers = []
 let TESTER
 
-beforeEach(function (done) {
-  this.timeout(5000)
+before(function (done) {
+  this.timeout(10 * 1000)
   test.setUpTestEnv((p) => {
     processes = p
     identifiers = Object.keys(processes)
     TESTER = test.getTester()
-    console.log('#####################################################################################')
-    setTimeout(done, 1000)
+    console.log('\n############################################################## TEST ENV RESETED ##############################################################\n')
+    setTimeout(done, 4 * 1000)
   })
 })
 
-afterEach(function () {
+after(function () {
   for (let p in processes) {
     processes[p].kill()
   }
@@ -41,7 +41,7 @@ it('basic setup for tester env', function (done) {
   this.timeout(11000)
 })
 
-it('a basic call test', function (done) {
+it('a basic call/message test', function (done) {
   TESTER.call({servicePath: '/string/up', payload: 'yo'}, (err, body, resp) => {
     expect(body).to.equal('YO')
     done()

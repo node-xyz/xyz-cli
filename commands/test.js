@@ -24,6 +24,9 @@ exports.setUpTestEnv = function (cb, rcFile = 'xyztestrc.json') {
       systemConf: rc.systemConf
     })
     tester.bootstrap(require('./../xyz-core-commands/xyz.admin.bootstrap'))
+  } else {
+    // this will wonly work with xyz-core 0.3.3 or higer
+    tester.serviceRepository.forget()
   }
 
   let processes = {}
@@ -59,7 +62,6 @@ exports.setUpTestEnv = function (cb, rcFile = 'xyztestrc.json') {
       instanceIndex = 0
       nodeIndex++
     }
-
     setTimeout(createNext, DELAY)
   }
 

@@ -8,15 +8,14 @@ let identifiers = []
 let TESTER
 
 beforeEach(function (done) {
-  this.timeout(5000)
+  this.timeout(10 * 1000)
   test.setUpTestEnv((p) => {
     processes = p
     identifiers = Object.keys(processes)
     TESTER = test.getTester()
-    console.log('#####################################################################################')
-    setTimeout(done, 3000)
+    console.log('\n############################################################## TEST ENV RESETED ##############################################################\n')
+    setTimeout(done, 5 * 1000)
   })
-  this.timeout(5500)
 })
 
 afterEach(function () {

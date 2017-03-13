@@ -8,13 +8,13 @@ let identifiers = []
 let TESTER
 
 beforeEach(function (done) {
-  this.timeout(5000)
+  this.timeout(10 * 1000)
   test.setUpTestEnv((p) => {
     processes = p
     identifiers = Object.keys(processes)
     TESTER = test.getTester()
-    console.log('#####################################################################################')
-    setTimeout(done, 1000)
+    console.log('\n############################################################## TEST ENV RESETED ##############################################################\n')
+    setTimeout(done, 5 * 1000)
   })
 })
 
@@ -68,6 +68,7 @@ it('get', function (done) {
 })
 
 it('create', function (done) {
+  this.timeout(5 * 1000)
   const _PORT = 6000
   TESTER.call({
     servicePath: '/node/create',
@@ -79,10 +80,11 @@ it('create', function (done) {
     expect(body).to.equal('Done')
     setTimeout(() => {
       TESTER.call({servicePath: 'node/get'}, (err, body) => {
+        console.log(err, body)
         expect(body.length).to.equal(TOTAL + 1)
         expect(body[body.length - 1]).to.equal(`string.ms@127.0.0.1:${_PORT}`)
         done()
       })
-    }, 800)
+    }, 3 * 1000)
   })
 })
