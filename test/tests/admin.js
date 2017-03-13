@@ -84,6 +84,6 @@ it('create', function (done) {
         expect(body[body.length - 1]).to.equal(`string.ms@127.0.0.1:${_PORT}`)
         done()
       })
-    }, 3 * 1000)
+    }, 10 * 1000)
   })
 })
