@@ -80,7 +80,6 @@ it('create', function (done) {
     expect(body).to.equal('Done')
     setTimeout(() => {
       TESTER.call({servicePath: 'node/get'}, (err, body) => {
-        console.log(err, body)
         expect(body.length).to.equal(TOTAL + 1)
         expect(body[body.length - 1]).to.equal(`string.ms@127.0.0.1:${_PORT}`)
         done()
