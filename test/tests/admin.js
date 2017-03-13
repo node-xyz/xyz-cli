@@ -68,7 +68,7 @@ it('get', function (done) {
 })
 
 it('create', function (done) {
-  this.timeout(5 * 1000)
+  this.timeout(15 * 1000)
   const _PORT = 6000
   TESTER.call({
     servicePath: '/node/create',
