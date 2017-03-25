@@ -115,19 +115,19 @@ for the rest of this document we will use the two files in `exampels` folder of 
 
 After a successful `dev` command, it will list all running nodes. For the previous example it will print:
 
-![ls]()
+![ls](https://github.com/node-xyz/xyz-cli/blob/master/media/ls.png?raw=true)
 
 - ### top
 
 Will print the live updates of the nodes usage. Example:
 
-![top]()
+![top](https://github.com/node-xyz/xyz-cli/blob/master/media/top.png?raw=true)
 
 - ### inspect `<identifier>`
 
 will print all of the information that were printed using `console.log` in the main program. Example:
 
-![inspect]()
+![inspect](https://github.com/node-xyz/xyz-cli/blob/master/media/insp.png?raw=true)
 
 Identifier can be the **index** or **identifier** mentioned in the `ls` command. As an example, both `inspect 0` and `inspect string.ms@127.0.0.1:5000` are valid.
 
