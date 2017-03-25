@@ -4,14 +4,14 @@
       "path": "test/stringMS/string.ms.js",
       "instance": 2,
       "port": 5000,
-      "stdio": "file",
+      "stdio": "console",
       "params": ""
     },
     {
       "path": "test/mathMS/math.ms.js",
       "instance": 1,
       "port": 4000,
-      "stdio": "file",
+      "stdio": "console",
       "params": ""
     }
   ]
