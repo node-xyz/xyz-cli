@@ -1,6 +1,6 @@
 # xyz-cli
 
-[![Build Status](https://travis-ci.org/node-xyz/xyz-cli.svg?branch=master)](https://travis-ci.org/node-xyz/xyz-cli)
+[![Build Status](https://travis-ci.org/node-xyz/xyz-cli.svg?branch=master)](https://travis-ci.org/node-xyz/xyz-cli) [![npm version](https://badge.fury.io/js/xyz-cli.svg)](https://badge.fury.io/js/xyz-cli)
 ---
 
 Command line Interface for node-xyz
@@ -13,7 +13,7 @@ xyz-cli can be installed using
 $ npm install -g xyz-cli
 ```
 
-The main command is `xyz` and should be available in your command line environment.
+The cli app is `xyz` and should be available in your command line environment.
 
 # Commands
 
@@ -149,11 +149,11 @@ Will start logging the output of a specific microservice to the terminal. It is 
 
 Kills a specific node.
 
-- ### restart
+- ### restart `<identifier>`
 
 Will restart a specific node. useful while development.
 
-- ### duplicate
+- ### duplicate `<identifier>`
 
 Will duplicate a specific node. This will create an **Identical** node with the same configurations, except the `port`. it will automatically increment the port of the source node util it finds an empty port for the new node (This might cause some problems if each node is having multiple servers)
 
