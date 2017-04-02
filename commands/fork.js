@@ -5,8 +5,11 @@ const CONSTANTS = require('./../Configuration/constants')
 const fork = require('child_process').fork
 const config = require('./../Configuration/config')
 
-let spawnMicroservice = function (nodePath, params, cb, pipErr = false) {
-  let msProcess = fork(nodePath, params.split(' '), {stdio: ['pipe', 'pipe', 'pipe', 'ipc']})
+let spawnMicroservice = function (nodePath, params, cb, pipErr = false, env = '') {
+  let msProcess = fork(nodePath, params.split(' '), {
+    stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
+    env: env
+  })
   let stream
 
   function tempStderrOutput (data) {

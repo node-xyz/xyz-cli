@@ -19,6 +19,7 @@ module.exports = {
     port: 5000,
     instance: 1,
     increment: 1,
-    stdio: 'console'
+    stdio: 'console',
+    env: null
   }
 }

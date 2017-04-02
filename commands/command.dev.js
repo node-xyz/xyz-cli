@@ -53,7 +53,7 @@ let dev = function (args, cb) {
     let port = (node.port) + (instanceIndex * node.increment)
     fork.spawnMicroservice(
       node.path,
-      node.params + ` --xyz-transport.0.port ${port} --xyz-cli.enable true --xyz-cli.stdio ${node.stdio} ${env.xyzadmin && env.appendadmin ? '--xys-node 127.0.0.1:9000' : ''}`, () => {}, env.errlog)
+      node.params + ` --xyz-transport.0.port ${port} --xyz-cli.enable true --xyz-cli.stdio ${node.stdio} ${env.xyzadmin && env.appendadmin ? '--xys-node 127.0.0.1:9000' : ''}`, () => {}, env.errlog, util.stringToObject(node.env))
 
     instanceIndex++
     if (instanceIndex >= node.instance) {

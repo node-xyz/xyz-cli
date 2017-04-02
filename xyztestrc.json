@@ -4,7 +4,7 @@
       "path": "test/stringMS/string.ms.js",
       "instance": 2,
       "port": 5000,
-      "stdio": "console",
+      "stdio": "file",
       "params": "--xyz-logLevel none"
     },
     {
@@ -12,7 +12,8 @@
       "instance": 1,
       "port": 4000,
       "stdio": "console",
-      "params": "--xyz-logLevel none"
+      "params": "--xyz-logLevel none",
+      "env": "foo bar"
     }
   ]
 }

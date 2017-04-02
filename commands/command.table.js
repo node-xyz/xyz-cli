@@ -7,12 +7,12 @@ marked.setOptions({
 })
 
 function table () {
-  let table = `| Index   | Identifier   |  STDIO  | arguments  |\n|----------|:-------------:|------:|\n`
+  let table = `| Index   | Identifier   | command line arguments |\n|----------|:-------------:|------:|\n`
 
   let nodes = config.getNodes()
   let index = 0
   for (let node of Object.keys(nodes)) {
-    table += ` | ${index}|  ${node} |  ${nodes[node].selfConfig.cli.stdio} | ${nodes[node].process.spawnargs.slice(2).join(' ')} |\n`
+    table += ` | ${index}|  ${node} | ${nodes[node].process.spawnargs.slice(2).join(' ')} | \n`
     index += 1
   }
 

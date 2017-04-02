@@ -12,15 +12,9 @@
       "path": "math.ms.js",
       "instance": 1,
       "port": 4000,
-      "stdio": "file",
-      "params": "--xyz-logLevel verbose --xyz-name math.ms.master"
-    },
-    {
-      "path": "math.ms.js",
-      "instance": 1,
-      "port": 6000,
-      "stdio": "file",
-      "params": "--xyz-logLevel verbose --xyz-seed 127.0.0.1:4000 --xyz-name math.ms.slave"
+      "stdio": "console",
+      "params": "--xyz-logLevel verbose --xyz-name math.ms.master",
+      "env": "foo bar"
     }
   ]
 }

@@ -37,8 +37,22 @@ function argArrayToObject (arr) {
   }
   return obj
 }
+
+function stringToObject (str) {
+  let obj = {}
+  if (!str) return {}
+  let arr = str.split(' ')
+  for (let i = 0; i < arr.length; i++) {
+    let key = arr[i]
+    let value = arr[i + 1]
+    obj[key] = value
+    i++
+  }
+  return obj
+}
 module.exports = {
   argArrayToObject: argArrayToObject,
   MergeRecursive: MergeRecursive,
-  isPortTaken: isPortTaken
+  isPortTaken: isPortTaken,
+  stringToObject: stringToObject
 }
