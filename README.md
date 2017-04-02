@@ -73,6 +73,7 @@ Where the keys cna be:
 | increment   | increment value in port when `instance` is more than one |
 | stdio     | destination of the node's output. can be `console` or `file`. if file is selected, the node's output will be written to a file with appropriate name in a new folder named `log` relative to where the `.js` file is.|  
 | params    | values passed to the process as `process.argv`. can be anything with `--xyz` prefix similar to how a single ndoe's configuration can be overwritten with command line arguments.|
+| env | environemtns variables passed to the process.|
 
 As an example, the above code will generate two `file.js` nodes, one in port 5000 and the other in 5100.
 
@@ -105,6 +106,7 @@ for the rest of this document we will use the two files in `exampels` folder of 
       "instance": 1,
       "port": 6000,
       "stdio": "file",
+      "env": "foo bar"
       "params": "--xyz-logLevel verbose --xyz-seed 127.0.0.1:4000 --xyz-name math.ms.slave"
     }
   ]
