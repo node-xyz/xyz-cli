@@ -15,7 +15,7 @@ mathMs.register('/math/decimal/neg', fn.neg)
 mathMs.register('/math/decimal/sub', fn.sub)
 
 setInterval(() => {
-  console.log(process.env);
+  console.log(process.env)
   mathMs.call({servicePath: '/string/up', payload: 'hello'}, (err, body, res) => {
     console.error('response of /string/up => ', err, body)
   })
