@@ -9,20 +9,37 @@ let identifiers = []
 let TESTER
 
 beforeEach(function (done) {
+  console.log('\n############################################################## TEST ENV RESETED ##############################################################\n')
   this.timeout(10 * 1000)
   test.setUpTestEnv((p) => {
     processes = p
     identifiers = Object.keys(processes)
     TESTER = test.getTester()
-    console.log('\n############################################################## TEST ENV RESETED ##############################################################\n')
     setTimeout(done, 5 * 1000)
   })
 })
 
-afterEach(function () {
+afterEach(function (done) {
+  this.timeout(10 * 1000)
   for (let p in processes) {
     processes[p].kill()
   }
+  setTimeout(done, 5 * 1000)
+})
+
+it('get', function (done) {
+  TESTER.call({servicePath: 'node/get'}, (err, body, resp) => {
+    expect(body.length).to.be.equal(TOTAL)
+    done()
+  })
+})
+
+it('msg', function (done) {
+  config.msg(0, '/string/up', 'yo', (err, data) => {
+    expect(err).to.equal(null)
+    expect(data).to.equal('YO')
+    done()
+  })
 })
 
 it('kill', function (done) {
@@ -34,6 +51,35 @@ it('kill', function (done) {
         done()
       })
     }, 800)
+  })
+})
+
+it('create', function (done) {
+  this.timeout(15 * 1000)
+  const _PORT = 6000
+  TESTER.call({
+    servicePath: '/node/create',
+    payload: {
+      path: 'test/stringMS/string.ms.js',
+      params: `--xyz-transport.0.port ${_PORT} --xyz-cli.enable true --xyz-cli.stdio file`
+    }
+  }, (err, body, resp) => {
+    expect(body).to.equal('Done')
+    setTimeout(() => {
+      TESTER.call({servicePath: 'node/get'}, (err, body) => {
+        expect(body.length).to.equal(TOTAL + 1)
+        expect(body[body.length - 1]).to.equal(`string.ms@127.0.0.1:${_PORT}`)
+        TESTER.call({servicePath: '/node/kill', payload: `string.ms@127.0.0.1:${_PORT}`}, (err, body, resp) => {
+          expect(body).to.equal('Done')
+          setTimeout(() => {
+            TESTER.call({servicePath: 'node/get'}, (err, body) => {
+              expect(body.length).to.equal(TOTAL)
+              done()
+            })
+          }, 800)
+        })
+      })
+    }, 10 * 1000)
   })
 })
 
@@ -58,41 +104,5 @@ it('restart', function (done) {
         done()
       }, 800)
     })
-  })
-})
-
-it('get', function (done) {
-  TESTER.call({servicePath: 'node/get'}, (err, body, resp) => {
-    expect(body.length).to.be.equal(TOTAL)
-    done()
-  })
-})
-
-it('create', function (done) {
-  this.timeout(15 * 1000)
-  const _PORT = 6000
-  TESTER.call({
-    servicePath: '/node/create',
-    payload: {
-      path: 'test/stringMS/string.ms.js',
-      params: `--xyz-transport.0.port ${_PORT} --xyz-cli.enable true --xyz-cli.stdio file`
-    }
-  }, (err, body, resp) => {
-    expect(body).to.equal('Done')
-    setTimeout(() => {
-      TESTER.call({servicePath: 'node/get'}, (err, body) => {
-        expect(body.length).to.equal(TOTAL + 1)
-        expect(body[body.length - 1]).to.equal(`string.ms@127.0.0.1:${_PORT}`)
-        done()
-      })
-    }, 10 * 1000)
-  })
-})
-
-it('msg', function (done) {
-  config.msg(0, '/string/up', 'yo', (err, data) => {
-    expect(err).to.equal(null)
-    expect(data).to.equal('YO')
-    done()
   })
 })

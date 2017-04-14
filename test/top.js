@@ -9,12 +9,13 @@ describe('basic', function () {
   })
 })
 
+
+describe('events', function () {
+  require('./tests/events')
+})
+
 describe('admin', function () {
   describe('shared functions in xyz admin and tester.', function () {
     require('./tests/admin')
   })
-})
-
-describe('events', function () {
-  require('./tests/events')
 })

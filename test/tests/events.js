@@ -18,10 +18,12 @@ beforeEach(function (done) {
   })
 })
 
-afterEach(function () {
+afterEach(function (done) {
+  this.timeout(10 * 1000)
   for (let p in processes) {
     processes[p].kill()
   }
+  setTimeout(done, 4 * 1000)
 })
 
 it('inspect events', function (done) {
@@ -42,9 +44,9 @@ it('network event', function (done) {
     let mathIdent = identifiers.filter((id) => id.match(/math/) !== null)
     _send('network', processes[mathIdent[0]], (data) => {
       console.log(data)
-      // two string clients are sending with 10msg/sec rate
-      expect(data.snd).to.be.at.least(5)
-      expect(data.rcv).to.be.at.least(15)
+      // two string clients are sending with 1msg/sec rate
+      expect(data.snd).to.be.at.least(0.5)
+      expect(data.rcv).to.be.at.least(1.5)
       done()
     })
   }, 5 * 1000)

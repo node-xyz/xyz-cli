@@ -49,7 +49,9 @@ let dev = function (args, cb) {
       return
     }
 
-    node = util.MergeRecursive(node, CONSTANTS.defaultNodeConfig)
+    node = util.MergeRecursive(CONSTANTS.defaultNodeConfig, node)
+
+    console.log(node)
 
     let port = (node.port) + (instanceIndex * node.increment)
     fork.spawnMicroservice(

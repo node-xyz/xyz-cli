@@ -8,12 +8,12 @@ let identifiers = []
 let TESTER
 
 before(function (done) {
+  console.log('\n############################################################## TEST ENV RESETED ##############################################################\n')
   this.timeout(10 * 1000)
   test.setUpTestEnv((p) => {
     processes = p
     identifiers = Object.keys(processes)
     TESTER = test.getTester()
-    console.log('\n############################################################## TEST ENV RESETED ##############################################################\n')
     setTimeout(done, 4 * 1000)
   })
 })
@@ -37,7 +37,7 @@ it('basic setup for tester env', function (done) {
         })
       })
     })
-  }, 10000)
+  }, 4 * 1000)
   this.timeout(11000)
 })
 

@@ -1,8 +1,7 @@
 {
   "nodes": [
     {
-      "path": "test/stringMS/string.ms.js",
-      "params" : " --xyz-name wtf"
+      "path": "test/stringMS/string.ms.js"
     },
     {
       "path": "test/stringMS/string.ms.js",

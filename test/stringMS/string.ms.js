@@ -23,6 +23,6 @@ setInterval(() => {
     servicePath: '/math/decimal/*',
     payload: { x: 1000000, y: new Date().getTime() }
   }, (err, body, res) => {
-    console.error('response of decimal/*', body)
+    // console.error('response of decimal/*', body)
   })
 }, 1000)

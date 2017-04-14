@@ -1,18 +1,19 @@
 const fs = require('fs')
 
 function MergeRecursive (obj1, obj2) {
+  let _obj1 = JSON.parse(JSON.stringify(obj1))
   for (var p in obj2) {
     try {
       if (obj2[p].constructor == Object) {
-        obj1[p] = MergeRecursive(obj1[p], obj2[p])
+        _obj1[p] = MergeRecursive(_obj1[p], obj2[p])
       } else {
-        obj1[p] = obj2[p]
+        _obj1[p] = obj2[p]
       }
     } catch (e) {
-      obj1[p] = obj2[p]
+      _obj1[p] = obj2[p]
     }
   }
-  return obj1
+  return _obj1
 }
 
 function isPortTaken (port, fn) {
