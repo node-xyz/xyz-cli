@@ -1,6 +1,3 @@
-describe('events', function () {
-  require('./tests/events')
-})
 
 describe('basic', function () {
   describe('basic test as a hello world', function () {
@@ -16,4 +13,8 @@ describe('admin', function () {
   describe('shared functions in xyz admin and tester.', function () {
     require('./tests/admin')
   })
+})
+
+describe('events', function () {
+  require('./tests/events')
 })

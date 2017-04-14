@@ -20,7 +20,7 @@ let single = function (env) {
   rc = util.MergeRecursive(CONSTANTS.defaultRcConfig, rc)
 
   let node = rc.nodes.filter((obj) => {
-    if (obj.path == env) return true
+    if (obj.path === env) return true
     return false
   })
   if (node.length !== 1) {

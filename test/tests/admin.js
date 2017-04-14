@@ -2,6 +2,7 @@ const test = require('./../../commands/test')
 const expect = require('chai').expect
 const TOTAL = require('./../common').TOTAL
 const _send = test.sendMessage
+const config = require('./../../Configuration/config')
 
 let processes
 let identifiers = []
@@ -85,5 +86,13 @@ it('create', function (done) {
         done()
       })
     }, 10 * 1000)
+  })
+})
+
+it('msg', function (done) {
+  config.msg(0, '/string/up', 'yo', (err, data) => {
+    expect(err).to.equal(null)
+    expect(data).to.equal('YO')
+    done()
   })
 })

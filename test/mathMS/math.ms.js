@@ -23,5 +23,3 @@ setInterval(() => {
     console.error('response of /string/up', body)
   })
 }, 1000)
-
-console.log(mathMs)

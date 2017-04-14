@@ -26,5 +26,3 @@ setInterval(() => {
     console.error('response of decimal/*', body)
   })
 }, 1000)
-
-console.log(stringMs)

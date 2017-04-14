@@ -106,6 +106,13 @@ vorpal
     require('./commands/command.tail')(args.identifier, callback)
   })
 
+vorpal
+  .command('msg <identifier> <servicePath> [payload]', 'send message to a node. Must run dev before using this')
+  .alias('call')
+  .action(function (args, callback) {
+    require('./commands/command.msg')(args, callback)
+  })
+
 console.log(chalk.bold.green(`
   _   _ ___________ _____     __   ____   ________
 | \ | |  _  |  _  \\  ___|    \\ \\ / /\\ \\ / /___  /

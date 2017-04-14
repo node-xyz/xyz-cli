@@ -1,5 +1,6 @@
 let chalk = require('chalk')
 const CONSTANTS = require('./../Configuration/constants')
+const config = require('./../Configuration/config')
 let fork = require('./fork')
 let util = require('./util')
 let XYZ = require('xyz-core')
@@ -25,6 +26,7 @@ exports.setUpTestEnv = function (cb, rcFile = 'xyztestrc.json') {
       systemConf: rc.systemConf
     })
     tester.bootstrap(require('./../xyz-core-commands/xyz.admin.bootstrap'))
+    config.setAdmin(tester)
   } else {
     // this will wonly work with xyz-core 0.3.3 or higer
     tester.serviceRepository.forget()
@@ -44,12 +46,15 @@ exports.setUpTestEnv = function (cb, rcFile = 'xyztestrc.json') {
 
   function createNext () {
     let node = rc.nodes[nodeIndex]
+
     if (!node) {
       cb(processes)
       return
     }
-    node = util.MergeRecursive(CONSTANTS.defaultNodeConfig, node)
+
+    node = util.MergeRecursive(node, CONSTANTS.defaultNodeConfig)
     let port = (node.port) + (instanceIndex * node.increment)
+
     fork.spawnMicroservice(
       node.path,
       (node.params || '') + ` ${isNaN(port) ? '' : '--xyz-transport.0.port ' + port} --xyz-cli.enable true --xyz-cli.stdio ${node.stdio} --xys-node 127.0.0.1:9000`,
@@ -58,10 +63,12 @@ exports.setUpTestEnv = function (cb, rcFile = 'xyztestrc.json') {
       }, true)
 
     instanceIndex++
+
     if (instanceIndex >= node.instance) {
       instanceIndex = 0
       nodeIndex++
     }
+
     setTimeout(createNext, DELAY)
   }
 
