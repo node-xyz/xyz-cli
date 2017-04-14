@@ -6,6 +6,10 @@ describe('basic', function () {
   describe('basic test as a hello world', function () {
     require('./tests/basic')
   })
+
+  describe('arguments', function () {
+    require('./tests/basic.arguments')
+  })
 })
 
 describe('admin', function () {

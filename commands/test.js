@@ -10,7 +10,8 @@ exports.setUpTestEnv = function (cb, rcFile = 'xyztestrc.json') {
   try {
     rc = require(`${process.cwd()}/${rcFile}`)
   } catch (e) {
-    console.log(chalk.red.bold(`config file [${process.cwd()}/${rcFile}] not found. terminating`))
+    console.log(chalk.red.bold(`error while reading config file [${process.cwd()}/${rcFile}]. terminating`))
+    console.log(e)
     process.exit()
   }
 
@@ -48,11 +49,10 @@ exports.setUpTestEnv = function (cb, rcFile = 'xyztestrc.json') {
       return
     }
     node = util.MergeRecursive(CONSTANTS.defaultNodeConfig, node)
-    // done
     let port = (node.port) + (instanceIndex * node.increment)
     fork.spawnMicroservice(
       node.path,
-      node.params + ` --xyz-transport.0.port ${port} --xyz-cli.enable true --xyz-cli.stdio ${node.stdio} --xys-node 127.0.0.1:9000`,
+      (node.params || '') + ` ${isNaN(port) ? '' : '--xyz-transport.0.port ' + port} --xyz-cli.enable true --xyz-cli.stdio ${node.stdio} --xys-node 127.0.0.1:9000`,
       function (err, msProcess, identifier) {
         processes[identifier] = msProcess
       }, true)

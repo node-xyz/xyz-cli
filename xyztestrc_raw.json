@@ -1,0 +1,11 @@
+{
+  "nodes": [
+    {
+      "path": "test/stringMS/string.ms.js"
+    },
+    {
+      "path": "test/stringMS/string.ms.js",
+      "port": 7501
+    }
+  ]
+}
