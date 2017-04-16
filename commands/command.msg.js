@@ -1,8 +1,15 @@
 const chalk = require('chalk')
 let config = require('./../Configuration/config')
 
+/**
+ * Calls a subprocess manually
+ * @method msg
+ * @param  {Object}   args
+ * @param  {Function} callback
+ * @return {null}
+ * @example xyz > msg 0 /math/decimal/neg '1'
+ */
 function msg (args, callback) {
-  console.log(args)
   config.msg(args.identifier, args.servicePath, args.payload, (err, data) => {
     if (err) {
       console.log(chalk.bold.red(err))

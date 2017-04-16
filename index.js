@@ -9,7 +9,7 @@ var os = require('os'),
   clui = require('clui')
 
 vorpal
-    .command('dev [xyzCommandLineArgs...]', 'run according to config file locally. when -x is enabled, you can pass in command line args like `xyz-name foo` to override the name. Note that there is no `--xyz` in this case.')
+    .command('dev [xyzCommandLineArgs...]', 'run according to config file locally. when -x is enabled, you can pass in command line args like `xyz-name foo` to override the name in ADMIN NODE. Note that there is no `--xyz` in this case.')
     .option('-c, --config <conf>', 'xyz config file to use. if not, will use ./xyzrc.json')
     .option('-x, --xyzadmin', 'lunch an xyz core instance inside the cli process')
     .option('-a --appendadmin', 'add admin node to all clients using --xyz-nodes. will work only with -x')
@@ -112,6 +112,12 @@ vorpal
   .action(function (args, callback) {
     require('./commands/command.msg')(args, callback)
   })
+
+vorpal
+    .command('single <file> [params...]', 'call a single node with an admin on top of it')
+    .action(function (args, callback) {
+      require('./commands/command.single')(args, callback)
+    })
 
 console.log(chalk.bold.green(`
   _   _ ___________ _____     __   ____   ________

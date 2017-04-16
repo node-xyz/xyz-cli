@@ -9,7 +9,6 @@ describe('basic', function () {
   })
 })
 
-
 describe('events', function () {
   require('./tests/events')
 })

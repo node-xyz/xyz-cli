@@ -1,38 +1,42 @@
-let chalk = require('chalk')
+const XYZ = require('xyz-core')
 const CONSTANTS = require('./../Configuration/constants')
+let chalk = require('chalk')
 let fork = require('./fork')
 let util = require('./util')
+let adminBootstrap = require('./../xyz-core-commands/xyz.admin.bootstrap')
+let config = require('./../Configuration/config')
 
-let single = function (env) {
-  let rc
-  if (!env.config) {
-    console.log(chalk.blue.bold('no config file given. reading from /xyzrc.json'))
-    try {
-      rc = require(`${process.cwd()}/xyzrc.json`)
-    } catch (e) {
-      console.log(chalk.red.bold('config file not found. terminating'))
-      process.exit()
-    }
-  } else {
-    rc = require(`${process.cwd()}/${env.config}`)
+let single = function (args, finish) {
+  console.log(args)
+  let file = args.file
+  let params
+  if (args.params) {
+    params = args.params.map((o, i) => {
+      if ((i % 2) === 0) {
+        return ('--' + o)
+      }
+      return o
+    }).join(' ')
   }
 
-  rc = util.MergeRecursive(CONSTANTS.defaultRcConfig, rc)
-
-  let node = rc.nodes.filter((obj) => {
-    if (obj.path === env) return true
-    return false
-  })
-  if (node.length !== 1) {
-    console.log(chalk.red.bold(`node with name ${env} was either not found or found multiple times. terminating...`))
-    process.exit()
+  let cmdLineArgs
+  if (args.xyzCommandLineArgs) {
+    cmdLineArgs = util.argArrayToObject(args.xyzCommandLineArgs)
   }
-  node = util.MergeRecursive(node[0], CONSTANTS.defaultNodeConfig)
 
-  let port = node.port
-  console.log(chalk.yellow(`Spawning 1 instances for ${node.path}`))
-  console.log(node.params + ` --xyz-port ${port} -xyz-cli.enable true --xyz-cli.stdio console`)
-  fork.spawnMicroservice(node.path, node.params + ` --xyz-port ${port} -xyz-cli.enable true --xyz-cli.stdio console`)
+  let rc = CONSTANTS.defaultRcConfig
+  let cliAdmin = new XYZ({
+    selfConf: rc.selfConf,
+    systemConf: rc.systemConf
+  }, cmdLineArgs)
+  cliAdmin.bootstrap(adminBootstrap)
+  config.setAdmin(cliAdmin)
+
+  fork.spawnMicroservice(
+    file,
+    (params || '') + ` --xyz-cli.enable true --xyz-cli.stdio file --xys-node 127.0.0.1:9000 `, () => {}, true)
+
+  finish()
 }
 
 module.exports = single

@@ -104,6 +104,21 @@ module.exports = {
       return
     }
 
+    // fix the payload
+    try {
+      payload = eval(payload)
+    } catch (e) {
+      try {
+        payload = JSON.parse(payload)
+      } catch (e) {
+        try {
+          payload = Object(payload)
+        } catch (e) {
+          cb(`payload ${payload} could not be understood. ${e}`)
+        }
+      }
+    }
+
     cliAdmin.call({
       servicePath: servicePath,
       payload: payload || null,

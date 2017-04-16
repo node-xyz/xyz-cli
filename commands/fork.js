@@ -6,6 +6,7 @@ const fork = require('child_process').fork
 const config = require('./../Configuration/config')
 
 let spawnMicroservice = function (nodePath, params, cb, pipErr = false) {
+  console.log(nodePath, params)
   let msProcess = fork(nodePath, params.split(' '), {stdio: ['pipe', 'pipe', 'pipe', 'ipc']})
   let stream
 
