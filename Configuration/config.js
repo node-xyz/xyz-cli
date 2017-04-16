@@ -111,14 +111,11 @@ module.exports = {
       try {
         payload = JSON.parse(payload)
       } catch (e) {
-        try {
-          payload = Object(payload)
-        } catch (e) {
-          cb(`payload ${payload} could not be understood. ${e}`)
-        }
+        cb(`payload ${payload} could not be understood. ${e}`)
       }
     }
 
+    console.log(payload, typeof (payload))
     cliAdmin.call({
       servicePath: servicePath,
       payload: payload || null,

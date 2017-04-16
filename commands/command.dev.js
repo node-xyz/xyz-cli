@@ -43,7 +43,9 @@ let dev = function (args, cb) {
 
   function createNext () {
     let node = rc.nodes[nodeIndex]
+
     // done
+
     if (!node) {
       cb()
       return
@@ -51,14 +53,14 @@ let dev = function (args, cb) {
 
     node = util.MergeRecursive(CONSTANTS.defaultNodeConfig, node)
 
-    console.log(node)
-
     let port = (node.port) + (instanceIndex * node.increment)
+
     fork.spawnMicroservice(
       node.path,
       (node.params || '') + ` ${isNaN(port) ? '' : '--xyz-transport.0.port ' + port} --xyz-cli.enable true --xyz-cli.stdio ${node.stdio} ${env.xyzadmin && env.appendadmin ? '--xys-node 127.0.0.1:9000' : ''}`, () => {}, env.errlog)
 
     instanceIndex++
+
     if (instanceIndex >= node.instance) {
       instanceIndex = 0
       nodeIndex++

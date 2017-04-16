@@ -37,7 +37,7 @@ it('basic setup for tester env', function (done) {
         })
       })
     })
-  }, 4 * 1000)
+  }, 8 * 1000)
   this.timeout(11000)
 })
 
