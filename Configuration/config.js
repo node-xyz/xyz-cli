@@ -1,6 +1,6 @@
 let chalk = require('chalk')
 let util = require('./../commands/util')
-let sendToTarget = require('xyz-core/src/Service/Middleware/service.sent.to.target')
+let sendToTarget = require('xyz-core/built/Service/Middleware/service.sent.to.target')
 
 let nodes = {}
 let rc = {}
@@ -105,13 +105,15 @@ module.exports = {
     }
 
     // fix the payload
-    try {
-      payload = eval(payload)
-    } catch (e) {
+    if ( payload[0] === '{' || payload[0] === '[' ) {
       try {
-        payload = JSON.parse(payload)
+        payload = eval(payload)
       } catch (e) {
-        cb(`payload ${payload} could not be understood. ${e}`)
+        try {
+          payload = JSON.parse(payload)
+        } catch (e) {
+          cb(`payload "${payload}" could not be understood. ${e}`)
+        }
       }
     }
 

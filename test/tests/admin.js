@@ -27,14 +27,14 @@ afterEach(function (done) {
   setTimeout(done, 5 * 1000)
 })
 
-it('get', function (done) {
+it('should send get', function (done) {
   TESTER.call({servicePath: 'node/get'}, (err, body, resp) => {
     expect(body.length).to.be.equal(TOTAL)
     done()
   })
 })
 
-it('msg', function (done) {
+it('should send msg', function (done) {
   config.msg(0, '/string/up', 'yo', (err, data) => {
     expect(err).to.equal(null)
     expect(data).to.equal('YO')
@@ -42,7 +42,7 @@ it('msg', function (done) {
   })
 })
 
-it('kill', function (done) {
+it('should send kill', function (done) {
   TESTER.call({servicePath: '/node/kill', payload: identifiers[1]}, (err, body, resp) => {
     expect(body).to.equal('Done')
     setTimeout(() => {
@@ -54,7 +54,7 @@ it('kill', function (done) {
   })
 })
 
-it('create', function (done) {
+it('should send create', function (done) {
   this.timeout(15 * 1000)
   const _PORT = 6000
   TESTER.call({
@@ -83,7 +83,7 @@ it('create', function (done) {
   })
 })
 
-it('duplicate', function (done) {
+it('should send duplicate', function (done) {
   TESTER.call({servicePath: '/node/duplicate', payload: '0'}, (err, body, resp) => {
     expect(body).to.equal('Done')
     setTimeout(() => {
@@ -95,7 +95,7 @@ it('duplicate', function (done) {
   })
 })
 
-it('restart', function (done) {
+it('should send restart', function (done) {
   TESTER.call({servicePath: '/node/restart', payload: identifiers[0]}, (err, body, resp) => {
     expect(body).to.equal('Done')
     setTimeout(() => {

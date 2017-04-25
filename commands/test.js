@@ -10,6 +10,7 @@ const DELAY = 500
 exports.setUpTestEnv = function (cb, rcFile = 'xyztestrc.json') {
   try {
     rc = require(`${process.cwd()}/${rcFile}`)
+    console.log(chalk.bold.blue(`reading test json file from ${process.cwd()}/${rcFile}`));
   } catch (e) {
     console.log(chalk.red.bold(`error while reading config file [${process.cwd()}/${rcFile}]. terminating`))
     console.log(e)
