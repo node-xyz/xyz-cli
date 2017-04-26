@@ -5,14 +5,14 @@
       "instance": 2,
       "port": 5000,
       "stdio": "console",
-      "params": "--xyz-logLevel debugee"
+      "params": "--xyz-logLevel 0"
     },
     {
       "path": "test/mathMS/math.ms.js",
       "instance": 1,
       "port": 4000,
       "stdio": "console",
-      "params": "--xyz-logLevel debugee"
+      "params": "--xyz-logLevel 0"
     }
   ]
 }

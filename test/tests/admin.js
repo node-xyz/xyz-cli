@@ -89,20 +89,29 @@ it('should send duplicate', function (done) {
     setTimeout(() => {
       TESTER.call({servicePath: 'node/get'}, (err, body) => {
         expect(body.length).to.equal(TOTAL + 1)
-        done()
+        TESTER.call({servicePath: '/node/kill', payload: `string.ms@127.0.0.1:5002`}, (err, body, resp) => {
+          expect(body).to.equal('Done')
+          done()
+        })
       })
     }, 800)
   })
 })
 
 it('should send restart', function (done) {
+  this.timeout(5 * 1000)
   TESTER.call({servicePath: '/node/restart', payload: identifiers[0]}, (err, body, resp) => {
     expect(body).to.equal('Done')
     setTimeout(() => {
       TESTER.call({servicePath: 'node/get'}, (err, body) => {
         expect(body.length).to.equal(TOTAL)
-        done()
-      }, 800)
-    })
+
+        // we should kill this manually becasue the ref. to process is destroyed
+        TESTER.call({servicePath: '/node/kill', payload: identifiers[0]}, (err, body, resp) => {
+          expect(body).to.equal('Done')
+          done()
+        })
+      })
+    },3 * 1000)
   })
 })
