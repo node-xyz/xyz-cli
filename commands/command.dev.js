@@ -3,7 +3,6 @@ const CONSTANTS = require('./../Configuration/constants')
 let fork = require('./fork')
 let util = require('./util')
 let XYZ = require('xyz-core')
-let test = require('xyz-core/src/Config/config.global')
 let adminBootstrap = require('./../xyz-core-commands/xyz.admin.bootstrap')
 let config = require('./../Configuration/config')
 
