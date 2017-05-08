@@ -3,7 +3,6 @@ const CONSTANTS = require('./../Configuration/constants')
 let fork = require('./fork')
 let util = require('./util')
 let XYZ = require('xyz-core')
-let test = require('xyz-core/src/Config/config.global')
 let adminBootstrap = require('./../xyz-core-commands/xyz.admin.bootstrap')
 let config = require('./../Configuration/config')
 
@@ -43,18 +42,21 @@ let dev = function (args, cb) {
 
   function createNext () {
     let node = rc.nodes[nodeIndex]
+
     // done
+
     if (!node) {
       cb()
       return
     }
 
     node = util.MergeRecursive(CONSTANTS.defaultNodeConfig, node)
+
     let port = (node.port) + (instanceIndex * node.increment)
+
     fork.spawnMicroservice(
       node.path,
-      node.params + ` --xyz-transport.0.port ${port} --xyz-cli.enable true --xyz-cli.stdio ${node.stdio} ${env.xyzadmin && env.appendadmin ? '--xys-node 127.0.0.1:9000' : ''}`, () => {}, env.errlog, util.stringToObject(node.env))
-
+      (node.params || '') + ` ${isNaN(port) ? '' : '--xyz-transport.0.port ' + port} --xyz-cli.enable true --xyz-cli.stdio ${node.stdio} ${env.xyzadmin && env.appendadmin ? '--xys-node 127.0.0.1:9000' : ''}`, () => {}, env.errlog)
     instanceIndex++
     if (instanceIndex >= node.instance) {
       instanceIndex = 0

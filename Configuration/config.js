@@ -1,5 +1,6 @@
 let chalk = require('chalk')
 let util = require('./../commands/util')
+let sendToTarget = require('xyz-core/built/Service/Middleware/service.sent.to.target')
 
 let nodes = {}
 let rc = {}
@@ -90,6 +91,44 @@ module.exports = {
     nodes[nodeIdentifier].process.kill('SIGTERM')
     delete nodes[nodeIdentifier]
     cb(null)
+  },
+
+  msg (identifier, servicePath, payload, cb) {
+    let node = this.chooseIdentifier(identifier, true)
+    console.log(node)
+    if (!node) {
+      cb(`invalid identifier ${identifier}`)
+      return
+    } else if (!cliAdmin) {
+      cb(`CLI Admin is not running. try using this command after 'dev -x'`)
+      return
+    }
+
+    // fix the payload
+    if ( payload[0] === '{' || payload[0] === '[' ) {
+      try {
+        payload = eval(payload)
+      } catch (e) {
+        try {
+          payload = JSON.parse(payload)
+        } catch (e) {
+          cb(`payload "${payload}" could not be understood. ${e}`)
+        }
+      }
+    }
+
+    console.log(payload, typeof (payload))
+    cliAdmin.call({
+      servicePath: servicePath,
+      payload: payload || null,
+      sendStrategy: sendToTarget(node.split('@')[1])
+    }, (err, data) => {
+      if (err) {
+        cb(err)
+      } else {
+        cb(null, data)
+      }
+    })
   },
 
   inspect (identifier, json, cb) {

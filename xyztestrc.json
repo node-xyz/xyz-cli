@@ -4,16 +4,25 @@
       "path": "test/stringMS/string.ms.js",
       "instance": 2,
       "port": 5000,
+<<<<<<< HEAD
       "stdio": "file",
       "params": "--xyz-logLevel none"
+=======
+      "stdio": "console",
+      "params": "--xyz-logLevel 0"
+>>>>>>> dev
     },
     {
       "path": "test/mathMS/math.ms.js",
       "instance": 1,
       "port": 4000,
       "stdio": "console",
+<<<<<<< HEAD
       "params": "--xyz-logLevel none",
       "env": "foo bar"
+=======
+      "params": "--xyz-logLevel 0"
+>>>>>>> dev
     }
   ]
 }

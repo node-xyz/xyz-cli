@@ -20,8 +20,6 @@ setInterval(() => {
     servicePath: '/string/up',
     payload: 'yo'
   }, (err, body, res) => {
-    console.error('response of /string/up', body)
+    // console.error('response of /string/up', body)
   })
-}, 100)
-
-console.log(mathMs)
+}, 1000)

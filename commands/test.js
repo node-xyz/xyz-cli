@@ -1,5 +1,6 @@
 let chalk = require('chalk')
 const CONSTANTS = require('./../Configuration/constants')
+const config = require('./../Configuration/config')
 let fork = require('./fork')
 let util = require('./util')
 let XYZ = require('xyz-core')
@@ -9,8 +10,10 @@ const DELAY = 500
 exports.setUpTestEnv = function (cb, rcFile = 'xyztestrc.json') {
   try {
     rc = require(`${process.cwd()}/${rcFile}`)
+    console.log(chalk.bold.blue(`reading test json file from ${process.cwd()}/${rcFile}`));
   } catch (e) {
-    console.log(chalk.red.bold(`config file [${process.cwd()}/${rcFile}] not found. terminating`))
+    console.log(chalk.red.bold(`error while reading config file [${process.cwd()}/${rcFile}]. terminating`))
+    console.log(e)
     process.exit()
   }
 
@@ -24,6 +27,7 @@ exports.setUpTestEnv = function (cb, rcFile = 'xyztestrc.json') {
       systemConf: rc.systemConf
     })
     tester.bootstrap(require('./../xyz-core-commands/xyz.admin.bootstrap'))
+    config.setAdmin(tester)
   } else {
     // this will wonly work with xyz-core 0.3.3 or higer
     tester.serviceRepository.forget()
@@ -43,25 +47,29 @@ exports.setUpTestEnv = function (cb, rcFile = 'xyztestrc.json') {
 
   function createNext () {
     let node = rc.nodes[nodeIndex]
+
     if (!node) {
       cb(processes)
       return
     }
+
     node = util.MergeRecursive(CONSTANTS.defaultNodeConfig, node)
-    // done
     let port = (node.port) + (instanceIndex * node.increment)
+
     fork.spawnMicroservice(
       node.path,
-      node.params + ` --xyz-transport.0.port ${port} --xyz-cli.enable true --xyz-cli.stdio ${node.stdio} --xys-node 127.0.0.1:9000`,
+      (node.params || '') + ` ${isNaN(port) ? '' : '--xyz-transport.0.port ' + port} --xyz-cli.enable true --xyz-cli.stdio ${node.stdio} --xys-node 127.0.0.1:9000`,
       function (err, msProcess, identifier) {
         processes[identifier] = msProcess
       }, true)
 
     instanceIndex++
+
     if (instanceIndex >= node.instance) {
       instanceIndex = 0
       nodeIndex++
     }
+
     setTimeout(createNext, DELAY)
   }
 
