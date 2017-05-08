@@ -160,6 +160,10 @@ Will restart a specific node. useful while development.
 Will duplicate a specific node. This will create an **Identical** node with the same configurations, except the `port`. it will automatically increment the port of the source node util it finds an empty port for the new node (This might cause some problems if each node is having multiple servers)
 
 
+- ### msg `<identifier> <servicePath> [payload]`
+
+Will send a message to `<indentifier>` using `<servicePath>` with an optional payload `[payload]`. This will only work when you run services with `-x` and all nodes use the default ping as their service discovery mechanism.
+
 # The admin node (`dev -x`)
 
 This option can be enabled to create a `xyz-core` instance inside the cli. This node will automatically expose some services so that other cli nodes (or basically any other client) can use them:
