@@ -1,6 +1,9 @@
 # xyz-cli
 
 [![Build Status](https://travis-ci.org/node-xyz/xyz-cli.svg?branch=master)](https://travis-ci.org/node-xyz/xyz-cli) [![npm version](https://badge.fury.io/js/xyz-cli.svg)](https://badge.fury.io/js/xyz-cli)
+[![dependencies Status](https://david-dm.org/node-xyz/xyz-cli/status.svg)](https://david-dm.org/node-xyz/xyz-cli)
+
+
 ---
 
 Command line Interface for node-xyz
