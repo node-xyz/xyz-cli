@@ -32,7 +32,7 @@
     "preferences": "^0.2.1",
     "touch": "^1.0.0",
     "vorpal": "^1.11.4",
-    "xyz-core": "latest"
+    "xyz-core": "^0.4.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",
